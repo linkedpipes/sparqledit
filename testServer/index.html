@@ -1,0 +1,36 @@
+<html ng-app="sparqlTestApp">
+
+<head>
+    <title>Tester</title>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="site.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+</head>
+
+<body ng-controller="SparqlTestController">
+    <div ng-repeat="phone in phones">
+        {{phone.name}}
+    </div>
+    
+    <div class="row">
+        <div class="col s6">
+            <textarea id="textarea1" class="materialize-textarea"></textarea>
+            <button class="btn" ng-click="codeClick()">as dasdas</button>
+        </div>
+        <div class="col s6 ">
+            <div id="Output" class="card blue">
+                <div class="card-content white-text">
+                    <span class="card-title">Card Title</span>
+                    <p>{{textOutput}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
