@@ -1,1 +1,0 @@
-node node_modules/jison/lib/cli.js ./parser.jison -p slr -o ./bin/SparqlParser.js
