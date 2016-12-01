@@ -13,8 +13,7 @@ function showTerminals(parser, input) {
 function ERSParser(prefixes, baseIRI) {
 
   var prefixesCopy = {};
-  for (var prefix in prefixes || {})
-  {
+  for (var prefix in prefixes || {}) {
     prefixesCopy[prefix] = prefixes[prefix];
   }
 
