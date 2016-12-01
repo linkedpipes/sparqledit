@@ -4,10 +4,12 @@ function showTerminals(parser, input) {
   var lexer = Object.create(parser.lexer);
   lexer.setInput(input);
   var token = lexer.lex();
+  var result = "";
   while (token != 1) {
-    console.log(parser.terminals_[token]);
+    result += " " + parser.terminals_[token].toString();
     token = lexer.lex();
   }
+  return result;
 }
 
 function ERSParser(prefixes, baseIRI) {
@@ -21,7 +23,6 @@ function ERSParser(prefixes, baseIRI) {
   parser.parse = function () {
     Parser.base = baseIRI || '';
     Parser.prefixes = Object.create(prefixesCopy);
-    Parser.cos = "asdf";
     var res = Parser.prototype.parse.apply(parser, arguments);
     return res;
   };
@@ -29,7 +30,7 @@ function ERSParser(prefixes, baseIRI) {
   parser._resetBlanks = Parser._resetBlanks;
   // TODO: do not print terminals, but return them
   parser.showTerminals = function (input) {
-    showTerminals(parser, input)
+    return showTerminals(parser, input)
   }
   return parser;
 }

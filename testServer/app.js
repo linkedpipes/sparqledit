@@ -3,7 +3,7 @@ var fs = require('fs');
 var app = express();
 
 app.use('/', express.static(__dirname));
-app.use('/content', express.static(__dirname + '\\..\\parser'));
+app.use('/content', express.static(__dirname + '\\..\\ERSParser'));
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '\\index.html')
 })

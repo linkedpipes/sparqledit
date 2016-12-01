@@ -3,6 +3,8 @@
 <head>
     <title>Tester</title>
     <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.js"></script>
+    <script src="content/bin/ERSParser.js"></script>
     <script src="site.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- Compiled and minified CSS -->
@@ -13,22 +15,47 @@
 </head>
 
 <body ng-controller="SparqlTestController">
-    <div ng-repeat="phone in phones">
-        {{phone.name}}
-    </div>
-    
     <div class="row">
         <div class="col s6">
-            <textarea id="textarea1" class="materialize-textarea"></textarea>
-            <button class="btn" ng-click="codeClick()">as dasdas</button>
+            <textarea ng-model="queryInput" ng-change="queryInputChanged()" class="materialize-textarea"></textarea>
+            <button class="btn align-right" ng-click="codeClick()">Run</button>
         </div>
         <div class="col s6 ">
-            <div id="Output" class="card blue">
+            <div class="card blue" ng-show="parserOutput != null">
                 <div class="card-content white-text">
-                    <span class="card-title">Card Title</span>
-                    <p>{{textOutput}}</p>
+                    <span class="card-title">Parser result</span>
+                    <p>
+                        <pre>{{parserOutput|json}}</pre>
+                    </p>
                 </div>
             </div>
+
+            <div class="card blue" ng-show="lexerOutput != null">
+                <div class="card-content white-text">
+                    <span class="card-title">Lexer output</span>
+                    <p>{{lexerOutput}}</p>
+                </div>
+            </div>
+
+            <div class="card red" ng-show="parserErrorOutput != null">
+                <div class="card-content white-text">
+                    <span class="card-title">Parser error</span>
+                    <p>
+                        <pre>{{parserErrorOutput|json}}</pre>
+                    </p>
+                </div>
+            </div>
+
+            <div class="card red" ng-show="lexerErrorOutput != null">
+                <div class="card-content white-text">
+                    <span class="card-title">Lexer error</span>
+                    <p>
+                        <pre>{{lexerErrorOutput|json}}</pre>
+                    </p>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </body>
