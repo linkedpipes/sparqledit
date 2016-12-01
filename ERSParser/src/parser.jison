@@ -394,12 +394,15 @@ PN_LOCAL_ESC          "\\"("_"|"~"|"."|"-"|"!"|"$"|"&"|"'"|"("|")"|"*"|"+"|","|"
 
 %ebnf
 
-%start QueryOrUpdateUnit
+%start StartNeterminal 
 
 %%
-
+StartNeterminal
+    : QueryOrUpdateUnit EOF
+    | QueryOrUpdateUnit error EOF
+    ;
 QueryOrUpdateUnit
-    : ( BaseDecl | PrefixDecl )* ( Query | Update ) EOF
+    : ( BaseDecl | PrefixDecl )* ( Query | Update ) 
     {
       if (Parser.base)
         $2.base = Parser.base;
@@ -567,7 +570,7 @@ QuadsNotTriples
     }
     ;
 TriplesTemplate
-    : (TriplesSameSubject '.')* TriplesSameSubject '.'? -> { type: 'bgp', triples: unionAll($1, [$2]) }
+    : (TriplesSameSubjectError '.')* TriplesSameSubjectError '.'? -> { type: 'bgp', triples: unionAll($1, [$2]) }
     ;
 GroupGraphPattern
     : '{' SubSelect '}' -> $2
@@ -608,7 +611,11 @@ GroupGraphPatternSubTail
     : GraphPatternNotTriples '.'? TriplesBlock? -> $3 ? [$1, $3] : $1
     ;
 TriplesBlock
-    : (TriplesSameSubjectPath '.')* TriplesSameSubjectPath '.'? -> { type: 'bgp', triples: unionAll($1, [$2]) }
+    : ( TriplesSameSubjectPathError '.')* TriplesSameSubjectPathError '.'? -> { type: 'bgp', triples: unionAll($1, [$2]) }
+    ;
+TriplesSameSubjectPathError
+    : TriplesSameSubjectPath
+    | error -> "error"
     ;
 GraphPatternNotTriples
     : ( GroupGraphPattern 'UNION' )* GroupGraphPattern -> $1.length ? { type: 'union', patterns: unionAll($1.map(degroupSingle), [degroupSingle($2)]) } : degroupSingle($2)
@@ -637,7 +644,11 @@ ConstructTemplate
     : '{' ConstructTriples? '}' -> $2
     ;
 ConstructTriples
-    : (TriplesSameSubject '.')* TriplesSameSubject '.'? -> unionAll($1, [$2])
+    : (TriplesSameSubjectError '.')* TriplesSameSubjectError '.'? -> unionAll($1, [$2])
+    ;
+TriplesSameSubjectError
+    : TriplesSameSubject
+    | error -> "error"
     ;
 TriplesSameSubject
     : VarOrTerm PropertyListNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
@@ -648,6 +659,10 @@ PropertyList
     ;
 PropertyListNotEmpty
     : ( VerbObjectList ';'+ )* VerbObjectList -> unionAll($1, [$2])
+    ;
+VerbObjectListError
+    :VerbObjectList
+    | error -> "error"
     ;
 VerbObjectList
     : Verb ObjectList -> objectListToTriples($1, $2)
@@ -662,13 +677,19 @@ ObjectList
     ;
 TriplesSameSubjectPath
     : VarOrTerm PropertyListPathNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
+    | VarOrTerm error ->  "to be"
     | TriplesNodePath PropertyListPathNotEmpty? -> !$2 ? $1.triples : appendAllTo($2.map(function (t) { return extend(triple($1.entity), t); }), $1.triples) /* the subject is a blank node, possibly with more triples */
     ;
 PropertyListPathNotEmpty
-    : ( Path | VAR ) ( GraphNodePath ',' )* GraphNodePath PropertyListPathNotEmptyTail* -> objectListToTriples(toVar($1), appendTo($2, $3), $4)
+    : ( Path | VAR ) ObjectList2 PropertyListPathNotEmptyTail* -> objectListToTriples(toVar($1), $2, $3)
+    | VAR error -> [["propertyError"]]
+    ;
+ObjectList2
+    :( GraphNodePath ',' )* GraphNodePath -> appendTo($1, $2)
     ;
 PropertyListPathNotEmptyTail
     : ';' -> []
+    | ';' error -> [];
     | ';' ( Path | VAR ) ObjectList -> objectListToTriples(toVar($2), $3)
     ;
 Path
