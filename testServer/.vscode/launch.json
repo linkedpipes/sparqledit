@@ -10,6 +10,21 @@
             "name": "Launch Program",
             "program": "${workspaceRoot}\\app.js",
             "cwd": "${workspaceRoot}"
+        },
+        {
+            "name": "Launch localhost with sourcemaps",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://127.0.0.1:3000",
+            "webRoot": "${workspaceRoot}",
+            "sourceMaps": true,
+            "diagnosticLogging": true
+        },
+        {
+            "name": "Launch index.html (without sourcemaps)",
+            "type": "chrome",
+            "request": "launch",
+            "file": "${workspaceRoot}/index.html"
         }
     ]
 }

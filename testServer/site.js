@@ -6,7 +6,7 @@ phonecatApp
     .controller('SparqlTestController', ['$scope', '$cookies', function SparqlTestController($scope, $cookies) {
         $scope.lexerOutput = null;
         $scope.parserOutput = null;
-        $scope.parseErrorOutput = null;
+        $scope.parserErrorOutput = null;
         $scope.lexerErrorOutput = null;
         $scope.queryInput = $cookies.get('queryInput');
 
@@ -29,9 +29,10 @@ phonecatApp
                 $scope.parserOutput = parserResult;
             } catch (error) {
                 $scope.parserOutput = null;
-                $scope.parserErrorOutput = error;
+                $scope.parserErrorOutput = {
+                    message: error.message
+                };
             }
-
         };
 
         $scope.queryInputChanged = function () {
