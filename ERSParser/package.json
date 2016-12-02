@@ -13,12 +13,16 @@
     "@types/gulp": "^3.8.32",
     "@types/mocha": "^2.2.33",
     "@types/node": "0.0.1",
+    "@types/underscore": "^1.7.36",
     "chai": "^3.5.0",
+    "git": "^0.1.5",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
+    "gulp-jison": "^1.2.0",
     "gulp-mocha": "^3.0.1",
     "gulp-rename": "^1.2.2",
-    "jison": "^0.4.17"
+    "jison": "^0.4.17",
+    "simple-git": "^1.63.0"
   }
 }
