@@ -109,11 +109,6 @@
     return expression;
   }
 
-  // Creates a path with the given type and items
-  function path(type, items) {
-    return { type: 'path', pathType: type, items: items };
-  }
-
   // Transforms a list of operations types and arguments into a tree of operations
   function createOperationTree(initialExpression, operationList) {
     for (var i = 0, l = operationList.length, item; i < l && (item = operationList[i]); i++)
@@ -611,11 +606,7 @@ GroupGraphPatternSubTail
     : GraphPatternNotTriples '.'? TriplesBlock? -> $3 ? [$1, $3] : $1
     ;
 TriplesBlock
-    : ( TriplesSameSubjectPathError '.')* TriplesSameSubjectPathError '.'? -> { type: 'bgp', triples: unionAll($1, [$2]) }
-    ;
-TriplesSameSubjectPathError
-    : TriplesSameSubjectPath
-    | error -> "error"
+    : TriplesTemplate /* Because of path prunning */
     ;
 GraphPatternNotTriples
     : ( GroupGraphPattern 'UNION' )* GroupGraphPattern -> $1.length ? { type: 'union', patterns: unionAll($1.map(degroupSingle), [degroupSingle($2)]) } : degroupSingle($2)
@@ -652,7 +643,7 @@ TriplesSameSubjectError
     ;
 TriplesSameSubject
     : VarOrTerm PropertyListNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
-    | TriplesNode PropertyList -> appendAllTo($2.map(function (t) { return extend(triple($1.entity), t); }), $1.triples) /* the subject is a blank node, possibly with more triples */
+    | TriplesNode PropertyList -> !$2 ? $1.triples : appendAllTo($2.map(function (t) { return extend(triple($1.entity), t); }), $1.triples) /* the subject is a blank node, possibly with more triples */
     ;
 PropertyList
     : PropertyListNotEmpty?
@@ -675,67 +666,13 @@ Verb
 ObjectList
     : (GraphNode ',')* GraphNode -> appendTo($1, $2)
     ;
-TriplesSameSubjectPath
-    : VarOrTerm PropertyListPathNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
-    | VarOrTerm error ->  "to be"
-    | TriplesNodePath PropertyListPathNotEmpty? -> !$2 ? $1.triples : appendAllTo($2.map(function (t) { return extend(triple($1.entity), t); }), $1.triples) /* the subject is a blank node, possibly with more triples */
-    ;
-PropertyListPathNotEmpty
-    : ( Path | VAR ) ObjectList2 PropertyListPathNotEmptyTail* -> objectListToTriples(toVar($1), $2, $3)
-    | VAR error -> [["propertyError"]]
-    ;
-ObjectList2
-    :( GraphNodePath ',' )* GraphNodePath -> appendTo($1, $2)
-    ;
-PropertyListPathNotEmptyTail
-    : ';' -> []
-    | ';' error -> [];
-    | ';' ( Path | VAR ) ObjectList -> objectListToTriples(toVar($2), $3)
-    ;
-Path
-    : ( PathSequence '|' )* PathSequence -> $1.length ? path('|',appendTo($1, $2)) : $2
-    ;
-PathSequence
-    : ( PathEltOrInverse '/' )* PathEltOrInverse -> $1.length ? path('/', appendTo($1, $2)) : $2
-    ;
-PathElt
-    : PathPrimary ( '?' | '*' | '+' )? -> $2 ? path($2, [$1]) : $1
-    ;
-PathEltOrInverse
-    : '^'? PathElt -> $1 ? path($1, [$2]) : $2;
-    ;
-PathPrimary
-    : iri
-    | 'a' -> RDF_TYPE
-    | '!' PathNegatedPropertySet -> path($1, [$2])
-    | '(' Path ')' -> $2
-    ;
-PathNegatedPropertySet
-    : PathOneInPropertySet
-    | NIL -> []
-    | '(' ( PathOneInPropertySet '|' )* PathOneInPropertySet? ')' -> path('|', appendTo($2, $3))
-    ;
-PathOneInPropertySet
-    : iri
-    | 'a' -> RDF_TYPE
-    | '^' iri -> path($1, [$2])
-    | '^' 'a' -> path($1, [RDF_TYPE])
-    ;
 TriplesNode
     : '(' GraphNode+ ')' -> createList($2)
     | '[' PropertyListNotEmpty ']' -> createAnonymousObject($2)
     ;
-TriplesNodePath
-    : '(' GraphNodePath+ ')' -> createList($2)
-    | '[' PropertyListPathNotEmpty ']' -> createAnonymousObject($2)
-    ;
 GraphNode
     : VarOrTerm -> { entity: $1, triples: [] } /* for consistency with TriplesNode */
     | TriplesNode
-    ;
-GraphNodePath
-    : VarOrTerm -> { entity: $1, triples: [] } /* for consistency with TriplesNodePath */
-    | TriplesNodePath
     ;
 VarOrTerm
     : VAR -> toVar($1)
