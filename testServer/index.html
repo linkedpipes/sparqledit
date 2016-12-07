@@ -5,6 +5,7 @@
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-cookies/angular-cookies.js"></script>
     <script src="content/bin/ERSParser.js"></script>
+    <script src="sparqljs-browser.js"></script>
     <script src="site.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <!-- Compiled and minified CSS -->
@@ -18,7 +19,8 @@
     <div class="row">
         <div class="col s6">
             <textarea ng-model="queryInput" ng-change="queryInputChanged()" class="materialize-textarea"></textarea>
-            <button class="btn align-right" ng-click="codeClick()">Run</button>
+            <button class="btn align-right" ng-click="runNewParserClick()">Run</button>
+            <button class="btn align-right" ng-click="runOriginalParserClick()">Run Original</button>
         </div>
         <div class="col s6 ">
             <div class="card blue" ng-show="parserOutput != null">

@@ -1,3 +1,28 @@
+function runParser(parser, $scope, runLexer) {
+    $scope.lexerErrorOutput = null;
+    $scope.parserErrorOutput = null;
+    var parserInput = $scope.queryInput;
+    if (runLexer) {
+        try {
+            $scope.lexerOutput = parser.showTerminals(parserInput);
+        }
+        catch (error) {
+            $scope.lexerOutput = null;
+            $scope.lexerErrorOutput = error;
+        }
+    }
+
+    try {
+        var parserResult = parser.parse(parserInput);
+        $scope.parserOutput = parserResult;
+    } catch (error) {
+        $scope.parserOutput = null;
+        $scope.parserErrorOutput = {
+            message: error.message
+        };
+    }
+}
+
 // Define the `phonecatApp` module
 var phonecatApp = angular.module('sparqlTestApp', ['ngCookies']);
 
@@ -10,30 +35,16 @@ phonecatApp
         $scope.lexerErrorOutput = null;
         $scope.queryInput = $cookies.get('queryInput');
 
-        $scope.codeClick = function () {
-            $scope.lexerErrorOutput = null;
-            $scope.parserErrorOutput = null;
-            var parserInput = $scope.queryInput;
+        $scope.runNewParserClick = function () {
             var parser = new ERSParser();
-
-            try {
-                $scope.lexerOutput = parser.showTerminals(parserInput);
-            }
-            catch (error) {
-                $scope.lexerOutput = null;
-                $scope.lexerErrorOutput = error;
-            }
-
-            try {
-                var parserResult = parser.parse(parserInput);
-                $scope.parserOutput = parserResult;
-            } catch (error) {
-                $scope.parserOutput = null;
-                $scope.parserErrorOutput = {
-                    message: error.message
-                };
-            }
+            runParser(parser, $scope, true);
         };
+
+        $scope.runOriginalParserClick = function () {
+            var parser = new sparqljs.Parser();
+            runParser(parser, $scope, false);
+        };
+
 
         $scope.queryInputChanged = function () {
             $cookies.put('queryInput', $scope.queryInput);
