@@ -6,7 +6,8 @@ function showTerminals(parser, input) {
   var token = lexer.lex();
   var result = "";
   while (token != 1) {
-    result += " " + parser.terminals_[token].toString();
+    var terminal = parser.terminals_[token];
+    result += " " + (terminal === undefined ? "undefined" : terminal.toString());
     token = lexer.lex();
   }
   return result;
