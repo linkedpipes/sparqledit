@@ -1,0 +1,14 @@
+getSymbolName: function(id) {
+    var symbols_ = this.symbols_;
+    return Object.keys(symbols_).filter(
+        function(x) {
+            return symbols_[x] == id;
+        }
+    )[0];
+},
+showStack: function(stack) {
+    var parser = this;
+    return stack.map(function(x) {
+        return parser.getSymbolName(x);
+    });
+}

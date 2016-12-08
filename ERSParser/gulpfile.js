@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var fs = require('fs');
 var _ = require('underscore');
 var exec = require('child_process').exec;
 var spawn = require('child_process').spawn;
@@ -6,10 +7,13 @@ var mocha = require('gulp-mocha');
 var clean = require('gulp-clean');
 var jison = require('gulp-jison');
 var rename = require('gulp-rename');
+var replace = require('gulp-replace');
 var browserify = require('gulp-browserify');
 var simpleGit = require('simple-git');
 
 var allowedPathsToCommitOutOfMaster = ['src/parser.jison', 'test/queries'];
+var parserInsertPartAnchor = 'var parser = {trace: function trace() { },';
+var parserInsertPartSource = 'src/parserExtension.txt';
 
 gulp.task('clean', function () {
     return gulp.src(['generatedParser', 'bin'], { read: false })
@@ -17,9 +21,11 @@ gulp.task('clean', function () {
 });
 
 gulp.task('buildParser', ['clean'], function () {
+    var parserInsertPart = fs.readFileSync(parserInsertPartSource);
     var pipeResult = gulp.src('.\\src\\parser.jison')
         .pipe(jison({ type: "slr" }))
         .pipe(rename('parserModule.js'))
+        .pipe(replace(parserInsertPartAnchor, parserInsertPartAnchor + parserInsertPart + ','))
         .pipe(gulp.dest('.\\generatedParser'));
     return pipeResult;
 });
@@ -64,7 +70,7 @@ gulp.task('precommit', function () {
                     return currentFilePath.match(allowedPath);
                 });
                 if (!result) {
-                    console.log("Warning: you probably did not want commit",'\033[31m', currentFilePath, '\x1b[0m');
+                    console.log("Warning: you probably did not want commit", '\033[31m', currentFilePath, '\x1b[0m');
                 }
             }
         });
