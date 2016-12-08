@@ -23,6 +23,26 @@
             "outDir": null
         },
         {
+            "name": "Launch without build",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}\\quickRun\\run.js",
+            "stopOnEntry": false,
+            "args": [],
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null,
+            "runtimeArgs": [
+                "--nolazy"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "internalConsoleOptions": "openOnSessionStart",
+            "externalConsole": false,
+            "sourceMaps": true,
+            "outDir": null
+        },
+        {
             "name": "Run mocha",
             "type": "node",
             "request": "launch",
