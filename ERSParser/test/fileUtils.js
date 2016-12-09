@@ -16,10 +16,10 @@ var getFilesTreeRecursive = function (path) {
     var folders = [];
 
     var result = fs.readdirSync(path.getAbsolutePath()).forEach(function (file) {
-        var subpath = path.getAbsolutePath() + "\\" + file;
+        var subpath = path.getAbsolutePath() + "/" + file;
         if (fs.lstatSync(subpath).isDirectory()) {
             var subFolderPath = Object.assign({}, path);
-            subFolderPath.relative += "\\" + file;
+            subFolderPath.relative += "/" + file;
             folders.push(getFilesTreeRecursive(subFolderPath));
         } else {
             files.push(file);

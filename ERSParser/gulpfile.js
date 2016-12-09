@@ -22,11 +22,11 @@ gulp.task('clean', function () {
 
 gulp.task('buildParser', ['clean'], function () {
     var parserInsertPart = fs.readFileSync(parserInsertPartSource);
-    var pipeResult = gulp.src('.\\src\\parser.jison')
+    var pipeResult = gulp.src('./src/parser.jison')
         .pipe(jison({ type: "slr" }))
         .pipe(rename('parserModule.js'))
         .pipe(replace(parserInsertPartAnchor, parserInsertPartAnchor + parserInsertPart + ','))
-        .pipe(gulp.dest('.\\generatedParser'));
+        .pipe(gulp.dest('./generatedParser'));
     return pipeResult;
 });
 

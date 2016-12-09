@@ -16,6 +16,7 @@
     "@types/underscore": "^1.7.36",
     "chai": "^3.5.0",
     "git": "^0.1.5",
+    "underscore": "^1.7.36",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",

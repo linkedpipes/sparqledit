@@ -3,7 +3,7 @@ var chai = require('chai');
 var fileUtils = require('./fileUtils');
 var ERSParser = require('../src/ERSParser');
 
-var testfolder = __dirname + "\\queries";
+var testfolder = __dirname + "/queries";
 
 
 
@@ -35,13 +35,13 @@ function runParser(queryFilePath) {
 }
 
 function testQuery(queryFolder, queryFileName) {
-    var queryPath = queryFolder + "\\" + queryFileName;
+    var queryPath = queryFolder + "/" + queryFileName;
     if (!queryPath.match(/.sparql$/)) {
         return;
     }
     it("shoud parser query " + queryFileName, function () {
         var result = runParser(queryPath);
-        var expectedResultFileName = queryFolder + "\\" + queryFileName.replace('.sparql', '.json');
+        var expectedResultFileName = queryFolder + "/" + queryFileName.replace('.sparql', '.json');
         if (fs.existsSync(expectedResultFileName)) {
             var expectedResultSerialized = fs.readFileSync(expectedResultFileName);
             var expectedResult = parseJSON(expectedResultSerialized);
