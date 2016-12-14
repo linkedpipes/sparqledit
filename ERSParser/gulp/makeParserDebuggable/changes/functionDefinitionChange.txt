@@ -1,0 +1,14 @@
+            return token;
+        };
+    var symbol, preErrorSymbol, state, action, a, r, yyval = {}, p, len, newState, expected;
+    function getNonTerminalFromCode(targetCode, symbols) {
+        for (var key in symbols) {
+            if (!symbols.hasOwnProperty(key)) {
+                continue;
+            }
+            if (symbols[key] === targetCode) {
+                return key;
+            }
+        }
+    }
+    this.parserDebugger = [];

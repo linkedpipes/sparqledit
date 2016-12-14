@@ -10,6 +10,7 @@ var rename = require('gulp-rename');
 var replace = require('gulp-replace');
 var browserify = require('gulp-browserify');
 var simpleGit = require('simple-git');
+var makeParserDebuggable = require('./gulp/makeParserDebuggable/makeParserDebuggable')
 
 var allowedPathsToCommitOutOfMaster = ['src/parser.jison', 'test/queries'];
 var parserInsertPartAnchor = 'var parser = {trace: function trace() { },';
@@ -26,11 +27,13 @@ gulp.task('buildParser', ['clean'], function () {
         .pipe(jison({ type: "slr" }))
         .pipe(rename('parserModule.js'))
         .pipe(replace(parserInsertPartAnchor, parserInsertPartAnchor + parserInsertPart + ','))
+        .pipe(makeParserDebuggable())
         .pipe(gulp.dest('./generatedParser'));
     return pipeResult;
 });
 
 gulp.task('build', ['buildParser', 'browserify'], function () {
+
 });
 
 gulp.task('test', ['build'], function () {

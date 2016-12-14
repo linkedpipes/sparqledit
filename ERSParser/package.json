@@ -15,8 +15,8 @@
     "@types/node": "0.0.1",
     "@types/underscore": "^1.7.36",
     "chai": "^3.5.0",
+    "escape-string-regexp": "^1.0.5",
     "git": "^0.1.5",
-    "underscore": "^1.7.36",
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
@@ -25,6 +25,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "jison": "^0.4.17",
-    "simple-git": "^1.63.0"
+    "lazypipe": "^1.0.1",
+    "simple-git": "^1.63.0",
+    "underscore": "^1.7.36"
   }
 }

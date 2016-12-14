@@ -1,0 +1,33 @@
+            r = this.performAction.apply(yyval, [
+                yytext,
+                yyleng,
+                yylineno,
+                sharedState.yy,
+                action[1],
+                vstack,
+                lstack
+            ].concat(args));
+            var prereduceValue = vstack.slice(vstack.length - len, vstack.length);
+            var debuggableProductions = [];
+            for (var debugIdx = len - 1; debugIdx >= 0; debugIdx--) {
+                var debuggableProduction = getNonTerminalFromCode(
+                    stack[stack.length - ((debugIdx + 1) * 2)],
+                    this.symbols_);
+                debuggableProductions.push(debuggableProduction);
+            }
+            // find the current nonterminal name (- nolan)
+            var currentNonterminalCode = this.productions_[action[1]][0];
+            var currentNonterminal = getNonTerminalFromCode(
+                currentNonterminalCode, this.symbols_);
+
+            this.parserDebugger.push({
+                action: 'reduce',
+                nonterminal: currentNonterminal,
+                prereduce: prereduceValue,
+                result: r,
+                productions: debuggableProductions,
+                text: yyval.$
+            });
+            if (typeof r !== 'undefined') {
+                return r;
+            }
