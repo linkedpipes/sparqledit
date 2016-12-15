@@ -1,3 +1,1 @@
-            return token;
-        };
     var symbol, preErrorSymbol, state, action, a, r, yyval = {}, p, len, newState, expected;

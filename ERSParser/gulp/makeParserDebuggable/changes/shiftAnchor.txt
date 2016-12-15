@@ -1,2 +1,2 @@
-            stack.push(action[1]);
-            symbol = null;
+                stack.push(action[1]); // push state
+                symbol = null;

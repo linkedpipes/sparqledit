@@ -1,7 +1,7 @@
-            stack.push(action[1]);
-            this.parserDebugger.push({
-                action: 'shift',
-                text: lexer.yytext,
-                terminal:this.terminals_[symbol]
-            });
-            symbol = null;
+                stack.push(action[1]); // push state
+                this.parserDebugger.push({
+                    action: 'shift',
+                    text: lexer.yytext,
+                    terminal:this.terminals_[symbol]
+                });
+                symbol = null;
