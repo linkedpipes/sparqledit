@@ -6,21 +6,61 @@ function safeStringify(obj, arg1, arg2) {
     }
 }
 
+function removeKeysFromStack(stack) {
+    return Object.keys(stack).map(function (x) {
+        return stack[x];
+    });
+}
+
+function createStackCollection(stack) {
+    var body = '';
+    stack.forEach(function (stackItem) {
+        body += '<li class="collection-item">' + safeStringify(stackItem) + '</li>';
+    });
+
+    return '<ul class="collection"><li class="collection-item">' + body + '</li></ul>';
+}
+function formatPrereduceLoc(locList) {
+    var result = '';
+    locList.forEach(function (loc) {
+        result += '[' + loc.first_line + ':' + loc.first_column + '-' + loc.last_line + ':' + loc.last_column + ']  ';
+    });
+    return result;
+}
+function formatReduceStep(step) {
+    var header = '<b>Reduce</b>: [' + step.nonterminal + ']'; //+ safeStringify(step.text);
+
+    var body = '<li class="collection-item">Prereduce: ' + safeStringify(step.prereduce) + '</li>'
+        + '<li class="collection-item">Prereduce loc: ' + formatPrereduceLoc(step.prereduceLoc) + '</li>'
+        + '<li class="collection-item">Productions: ' + safeStringify(step.productions) + '</li>'
+        + '<li class="collection-item">Result: ' + safeStringify(step.result) + '</li>'
+        + '<li class="collection-item">Stack: ' + createStackCollection(removeKeysFromStack(step.stack)) + '</li>';
+
+    return '<li><div class="collapsible-header indigo lighten-4">' + header + '</div>'
+        + '<div class="collapsible-body indigo lighten-5"><ul class="collection">' + body + '</ul></div></li>';
+}
+
+function formatShiftStep(step) {
+    var header = '<b>Shift</b>: ' + ' [' + step.terminal + ']';
+    var body = '<li class="collection-item">Value: "' + step.text + '"</li>'
+        + '<li class="collection-item">Stack: ' + createStackCollection(removeKeysFromStack(step.stack)) + '</li>';
+    return '<li><div class="collapsible-header red lighten-4">' + header + '</div>'
+        + '<div class="collapsible-body"><ul class="collection">' + body + '</ul></div>'
+        + '</li>';
+}
+
 function parserDebuggerToText(parserDebugger) {
     var text = parserDebugger.map(function (step) {
-        var res = '';
-        if (step.action === 'reduce') {
-            res += ' --> ';
+        switch (step.action) {
+            case 'reduce':
+                return formatReduceStep(step);
+            case 'shift':
+                return formatShiftStep(step);
+            default:
+                throw new Error('Unknown step action.');
         }
-        res += step.action + ': ' + safeStringify(step.text);
-        if (step.action === 'reduce') {
-            res += ' (' + step.nonterminal + ' -> ' + JSON.stringify(step.productions) + ')';
-        } else if (step.action === 'shift') {
-            res += ' (' + step.terminal + ')';
-        }
-        return res;
-    }).join('\n');
-    return text;
+    }).join('');
+    return '<ul class="collapsible" data-collapsible="expandable">' + text + '</ul>';
 }
 
 
@@ -53,7 +93,11 @@ function runParser(parser, $scope, runLexer) {
 }
 
 // Define the `phonecatApp` module
-var phonecatApp = angular.module('sparqlTestApp', ['ngCookies']);
+var phonecatApp = angular
+    .module('sparqlTestApp', ['ngCookies'])
+    .config(function ($sceProvider) {
+        $sceProvider.enabled(false);
+    });;
 
 // Define the `PhoneListController` controller on the `phonecatApp` module
 phonecatApp
@@ -61,7 +105,7 @@ phonecatApp
         $scope.showLexerOutput = $cookies.get('showLexerOutput') == 'true';
         $scope.showParserOutput = $cookies.get('showParserOutput') == 'true';
         $scope.showParserLog = $cookies.get('showParserLog') == 'true';
-        
+
         $scope.parserLog = null;
         $scope.lexerOutput = null;
         $scope.parserOutput = null;
@@ -72,6 +116,8 @@ phonecatApp
         $scope.runNewParserClick = function () {
             var parser = new ERSParser();
             runParser(parser, $scope, true);
+            // TODO: Evil!
+            setTimeout(function () { $('.collapsible').collapsible(); }, 200);
         };
 
         $scope.runOriginalParserClick = function () {

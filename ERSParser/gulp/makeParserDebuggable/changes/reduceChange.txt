@@ -1,5 +1,6 @@
                 r = this.performAction.apply(yyval, [yytext, yyleng, yylineno, sharedState.yy, action[1], vstack, lstack].concat(args));
                 var prereduceValue = vstack.slice(vstack.length - len, vstack.length);
+                var prereduceLoc = lstack.slice(lstack.length - len, lstack.length);
                 var debuggableProductions = [];
                 for (var debugIdx = len - 1; debugIdx >= 0; debugIdx--) {
                     var debuggableProduction = getNonTerminalFromCode(
@@ -16,9 +17,10 @@
                     action: 'reduce',
                     nonterminal: currentNonterminal,
                     prereduce: prereduceValue,
-                    result: r,
+                    prereduceLoc: prereduceLoc,
                     productions: debuggableProductions,
-                    text: yyval.$
+                    stack: JSON.parse(JSON.stringify(vstack)),
+                    result: yyval.$ == undefined? undefined : JSON.parse(JSON.stringify(yyval.$))
                 });
                 if (typeof r !== 'undefined') {
                     return r;

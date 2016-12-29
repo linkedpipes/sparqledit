@@ -2,6 +2,7 @@
                 this.parserDebugger.push({
                     action: 'shift',
                     text: lexer.yytext,
-                    terminal:this.terminals_[symbol]
+                    terminal:this.terminals_[symbol],
+                    stack: JSON.parse(JSON.stringify(vstack))
                 });
                 symbol = null;
