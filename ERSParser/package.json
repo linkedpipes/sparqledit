@@ -20,13 +20,13 @@
     "gulp": "^3.9.1",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
-    "gulp-jison": "^1.2.0",
     "gulp-mocha": "^3.0.1",
     "gulp-rename": "^1.2.2",
     "gulp-replace": "^0.5.4",
     "jison": "^0.4.17",
     "lazypipe": "^1.0.1",
     "simple-git": "^1.63.0",
+    "through2": "^2.0.3",
     "underscore": "^1.7.36"
   }
 }
