@@ -70,6 +70,23 @@
             "localRoot": "${workspaceRoot}",
             "remoteRoot": null,
             "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "name": "Run gulp",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceRoot}/node_modules/gulp/bin/gulp.js",
+            "stopOnEntry": false,
+            "args": [
+                "build"
+            ], //you can specify paths to specific tests here
+            "cwd": "${workspaceRoot}",
+            "runtimeExecutable": null,
+            "internalConsoleOptions": "openOnSessionStart",
+            "externalConsole": false,
+            "env": {
+                "NODE_ENV": "testing"
+            }
         }
     ]
 }
