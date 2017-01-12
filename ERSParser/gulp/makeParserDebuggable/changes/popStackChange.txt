@@ -1,0 +1,22 @@
+            popStack(error_rule_depth);
+            var debuggableSymbols = this.symbols_; 
+            var popStackPart = stack.slice(stack.length - 2 * error_rule_depth, stack.length);
+            var popStackPartNamed = popStackPart
+                 .map(function(stackSymbol,index){
+                    return getStateDescription(stackSymbol, (index % 2) == 1);
+                 });
+            var vpopStackPart = vstack.slice(vstack.length - error_rule_depth, vstack.length);
+            this.parserDebugger.push({
+                    action: 'popStack',
+                    symbol: String(this.getSymbolName(symbol)) + ' ' + lexer.yytext,
+                    preErrorSymbol: this.getSymbolName(preErrorSymbol),
+                    depth: error_rule_depth,
+                    state: state,
+                    error: errStr,
+                    stack: popStackPart,
+                    stackNamed: popStackPartNamed,
+                    vstack: vpopStackPart,
+                    allstack: stack.map(function(stackSymbol){
+                             return getNonTerminalFromCode(stackSymbol, debuggableSymbols);
+                            })
+                });           

@@ -1,8 +1,14 @@
                 stack.push(action[1]); // push state
                 this.parserDebugger.push({
                     action: 'shift',
+                    symbol: this.getSymbolName(symbol),
+                    preErrorSymbol: this.getSymbolName(preErrorSymbol),
                     text: lexer.yytext,
+                    state: state,
                     terminal:this.terminals_[symbol],
-                    stack: JSON.parse(JSON.stringify(vstack))
+                    stack: JSON.parse(JSON.stringify(vstack)),
+                    allstack: stack.map(function(stackSymbol, index){
+                             return getStateDescription(stackSymbol, (index % 2) == 0);
+                            })
                 });
                 symbol = null;

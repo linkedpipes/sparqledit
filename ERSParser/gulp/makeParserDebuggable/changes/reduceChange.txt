@@ -1,4 +1,18 @@
                 r = this.performAction.apply(yyval, [yytext, yyleng, yylineno, sharedState.yy, action[1], vstack, lstack].concat(args));
+                var itemSets = this.itemSets;
+                var symbolsThis = this.symbols_;
+                function getStateDescription(state, isEven) {
+                    if(isEven)
+                    {
+                        return itemSets.filter(function(x){return x.Id==state;})[0];
+                    }
+                    else
+                    {
+                        return getNonTerminalFromCode(state, symbolsThis);
+                    }
+                }
+                
+                
                 var prereduceValue = vstack.slice(vstack.length - len, vstack.length);
                 var prereduceLoc = lstack.slice(lstack.length - len, lstack.length);
                 var debuggableProductions = [];
@@ -13,15 +27,24 @@
                 var currentNonterminal = getNonTerminalFromCode(
                     currentNonterminalCode, this.symbols_);
 
+                var debuggableSymbols = this.symbols_; 
                 this.parserDebugger.push({
                     action: 'reduce',
+                    symbol: this.getSymbolName(symbol),
+                    preErrorSymbol: this.getSymbolName(preErrorSymbol),
+                    state: state,
                     nonterminal: currentNonterminal,
                     prereduce: prereduceValue,
                     prereduceLoc: prereduceLoc,
                     productions: debuggableProductions,
                     stack: JSON.parse(JSON.stringify(vstack)),
-                    result: yyval.$ == undefined? undefined : JSON.parse(JSON.stringify(yyval.$))
+                    result: yyval.$ == undefined? undefined : JSON.parse(JSON.stringify(yyval.$)),
+                    allstack: stack.map(function(stackSymbol, index){
+                             return getStateDescription(stackSymbol, (index % 2) == 0);
+                            }),
+                    allstackNumbers: JSON.parse(JSON.stringify(stack))
                 });
+
                 if (typeof r !== 'undefined') {
                     return r;
                 }
