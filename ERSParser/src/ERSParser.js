@@ -13,6 +13,7 @@ function showTerminals(parser, input) {
   return result;
 }
 
+
 function ERSParser(prefixes, baseIRI) {
 
   var prefixesCopy = {};
@@ -21,6 +22,11 @@ function ERSParser(prefixes, baseIRI) {
   }
 
   var parser = new Parser();
+  parser.traceMessages = [];
+  parser.trace = function (message) {
+    this.traceMessages.push(message);
+  }
+
   parser.parse = function () {
     Parser.base = baseIRI || '';
     Parser.prefixes = Object.create(prefixesCopy);

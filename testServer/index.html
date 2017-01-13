@@ -51,7 +51,19 @@
                 <div class="card-content white-text">
                     <span class="card-title">Parser error</span>
                     <p>
-                        <pre>{{parserErrorOutput|json}}</pre>
+                        <ul class="collection black-text">
+                            <li class="collection-item">
+                                Message {{parserErrorOutput.message}}
+                            </li>
+                            <li class="collection-item">
+                                Trace messages:
+                                <ul class="collection">
+                                    <li class="collection-item black-text" ng-repeat="message in parserErrorOutput.traceMessages">
+                                        {{message}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </p>
                 </div>
             </div>

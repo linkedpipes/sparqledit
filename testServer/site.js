@@ -144,7 +144,8 @@ function runParser(parser, $scope, runLexer) {
         $scope.parserLog = parserDebuggerToText(parser.parserDebugger);
         $scope.parserOutput = null;
         $scope.parserErrorOutput = {
-            message: error.message
+            message: error.message,
+            traceMessages: parser.traceMessages
         };
     }
 }
