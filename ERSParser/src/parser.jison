@@ -189,6 +189,14 @@
     return '"' + string + '"';
   }
 
+  function createError(type, value, yyloc, stack) {
+        var result = { 
+            errorType:type,
+             value:value
+            }; 
+        return result;
+  }
+
   // Creates a list, collecting its (possibly blank) items and triples associated with those items
   function createList(objects) {
     var list = blank(), head = list, listItems = [], listTriples, triples = [];
@@ -394,7 +402,7 @@ PN_LOCAL_ESC          "\\"("_"|"~"|"."|"-"|"!"|"$"|"&"|"'"|"("|")"|"*"|"+"|","|"
 %%
 StartNeterminal
     : QueryOrUpdateUnit EOF
-    | QueryOrUpdateUnit error EOF
+//    | QueryOrUpdateUnit error EOF
     ;
 QueryOrUpdateUnit
     : ( BaseDecl | PrefixDecl )* ( Query | Update ) 
@@ -639,7 +647,7 @@ ConstructTriples
     ;
 TriplesSameSubjectError
     : TriplesSameSubject
-    | error -> "error"
+    | error -> createError('TriplesSameSubjectErrorBefore', $1, @1)
     ;
 TriplesSameSubject
     : VarOrTerm PropertyListNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
@@ -649,11 +657,14 @@ PropertyList
     : PropertyListNotEmpty?
     ;
 PropertyListNotEmpty
-    : ( VerbObjectList ';'+ )* VerbObjectList -> unionAll($1, [$2])
+    : VerbObjectList (SnadToChapu)* -> unionAll($1, $2);
+    ;
+SnadToChapu
+    : ';'+ VerbObjectListError -> $2
     ;
 VerbObjectListError
-    :VerbObjectList
-    | error -> "error"
+    : VerbObjectList
+    | error -> createError('VerbObjectListError', $1, @1);
     ;
 VerbObjectList
     : Verb ObjectList -> objectListToTriples($1, $2)
@@ -664,7 +675,14 @@ Verb
     | 'a' -> RDF_TYPE
     ;
 ObjectList
-    : (GraphNode ',')* GraphNode -> appendTo($1, $2)
+    : GraphNode (Nechapu)*  -> [$1].concat($2)
+    ;
+Nechapu 
+    : ',' GraphNodeError -> $2
+    ;
+GraphNodeError
+    : GraphNode
+    | error { $$ = { entity: createError('GraphNode', $1, @1) , triples: []  };}
     ;
 TriplesNode
     : '(' GraphNode+ ')' -> createList($2)
