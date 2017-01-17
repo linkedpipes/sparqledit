@@ -1,0 +1,53 @@
+<html ng-app="sparqlTestApp">
+
+<head>
+    <title>Tester</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.js"></script>
+    <script src="content/bin/ERSParser.js"></script>
+    <script src="js/sparqljs-browser.js"></script>
+    <script src="js/parserVisualiser.js"></script>
+    <script src="js/site.js"></script>
+</head>
+
+<body ng-controller="SparqlTestController">
+    <div class="row">
+        <div class="col s4">
+            <textarea ng-model="queryInput" ng-change="queryInputChanged()" class="materialize-textarea"></textarea>
+            <button class="btn align-right" ng-click="runNewParserClick()">Run</button>
+            <button class="btn align-right" ng-click="runOriginalParserClick()">Run Original</button>
+            <div>
+                <p>
+                    <input type="checkbox" id="showLexerOutput" ng-model="showLexerOutput" ng-change="showCheckBoxChanged()" />
+                    <label for="showLexerOutput">Show lexer output</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="showParserOutput" ng-model="showParserOutput" ng-change="showCheckBoxChanged()" />
+                    <label for="showParserOutput">Show parser output</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="showParserLog" ng-model="showParserLog" ng-change="showCheckBoxChanged()" />
+                    <label for="showParserLog">Show parser log</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="showParserStates" ng-model="showParserStates" ng-change="showCheckBoxChanged()" />
+                    <label for="showParserStates">Show parser states</label>
+                </p>
+                <p>
+                    <input type="checkbox" id="showStack" ng-model="showStack" ng-change="showCheckBoxChanged()" />
+                    <label for="showStack">Show parser stack</label>
+                </p>
+            </div>
+            <ng-include src="'views/parserVisualiserView.html'"></ng-include>
+        </div>
+
+        <div class="col s8 ">
+            <ng-include src="'views/debugger/parserDebuggerView.html'"></ng-include>
+        </div>
+</body>
+
+</html>

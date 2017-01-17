@@ -2,10 +2,12 @@ var express = require('express')
 var fs = require('fs');
 var app = express();
 
-app.use('/', express.static(__dirname));
+app.use('/js', express.static(__dirname + '/js'));
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
+app.use('/views', express.static(__dirname + '/views'));
 app.use('/content', express.static(__dirname + '\\..\\ERSParser'));
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '\\index.html')
+    res.sendFile(__dirname + '/views/index.html')
 })
 var getFilesTree = function (path) {
     getFilesTreeRecursive

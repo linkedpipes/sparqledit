@@ -1,0 +1,55 @@
+<ul class="collapsible" data-collapsible="expandable">
+    <li ng-repeat="step in parserLog">
+        <!--Shift start-->
+
+        <div class="collapsible-header red lighten-4" ng-if="step.action == 'shift'">
+            <b>Shift</b>: [ {{::step.terminal}} ] {{::step.state}};
+        </div>
+
+        <div class="collapsible-body" ng-if="step.action == 'shift'">
+            <ul class="collection">
+                <li class="collection-item">Value: {{::step.text}}</li>
+                <li class="collection-item">Lookahead: Normal ({{::step.symbol}}) Error({{::step.preErrorSymbol}})</li>
+                <li class="collection-item" ng-init="stack=step.stack" ng-include="'./views/debugger/stackView.html'"></li>
+                <li class="collection-item" ng-if="showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
+            </ul>
+        </div>
+
+        <!--Shift end-->
+
+        <!--Reduce start-->
+        <div class="collapsible-header indigo lighten-4" ng-if="step.action == 'reduce'">
+            <b>Reduce</b>: [ {{::step.nonterminal}} ] {{::step.state}};
+        </div>
+        <div class="collapsible-body indigo lighten-5" ng-if="step.action == 'reduce'">
+            <ul class="collection">
+                <li class="collection-item">Prereduce: {{::step.prereduce | json}}</li>
+                <li class="collection-item">Lookahead: Normal ({{::step.symbol}}) Error ({{::step.preErrorSymbol}})</li>
+                <li class="collection-item">Prereduce loc: {{::step.prereduceLoc | json}} </li>
+                <li class="collection-item">Productions: {{::step.productions | json}} </li>
+                <li class="collection-item">Result: {{::step.result | json}} </li>
+                <li class="collection-item" ng-init="stack=step.stack" ng-include="'./views/debugger/stackView.html'"></li>
+                <li class="collection-item" ng-if="showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
+            </ul>
+        </div>
+        <!--Reduce end-->
+
+        <!--Pop start-->
+        <div class="collapsible-header yellow lighten-4" ng-if="step.action == 'popStack'">
+            <b>Pop stack {{::step.state}}</b>
+        </div>
+        <div class="collapsible-body" ng-if="step.action == 'popStack'">
+            <ul class="collection">
+                <li class="collection-item">Depth: {{::step.depth}}</li>
+                <li class="collection-item">Lookahead: Normal ({{::step.symbol}}) Error({{::step.preErrorSymbol}})</li>
+                <li class="collection-item">Error: {{::step.error | json}}) </li>
+                <li class="collection-item">Unwind symbols number: {{::step.stack | json}})</li>
+                <li class="collection-item">Unwind symbols: {{::step.stackNamed | json}})</li>
+                <li class="collection-item">Unwind values: {{::step.vstack | json}})</li>
+            </ul>
+        </div>
+
+
+        <!--Pop end-->
+    </li>
+</ul>
