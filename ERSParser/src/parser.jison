@@ -468,6 +468,7 @@ SolutionModifier
     ;
 GroupClause
     : 'GROUP' 'BY' GroupCondition+ -> { group: $3 }
+    | 'GROUP' 'BY' error -> { group:"error" }
     ;
 GroupCondition
     : BuiltInCall -> expression($1)
@@ -478,9 +479,11 @@ GroupCondition
     ;
 HavingClause
     : 'HAVING' Constraint+ -> { having: $2 }
+    | 'HAVING' error -> { having: "error" }
     ;
 OrderClause
     : 'ORDER' 'BY' OrderCondition+ -> { order: $3 }
+    | 'ORDER' 'BY' error -> { order: "error" }
     ;
 OrderCondition
     : 'ASC'  BrackettedExpression -> expression($2)
@@ -493,6 +496,8 @@ LimitOffsetClauses
     | 'OFFSET' INTEGER -> { offset: toInt($2) }
     | 'LIMIT'  INTEGER 'OFFSET' INTEGER -> { limit: toInt($2), offset: toInt($4) }
     | 'OFFSET' INTEGER 'LIMIT'  INTEGER -> { limit: toInt($4), offset: toInt($2) }
+    | 'LIMIT' error -> { limit: "error"  }
+    | 'OFFSET' error -> { offset: "error" }
     ;
 ValuesClause
     : 'VALUES' InlineData -> { type: 'values', values: $2 }
@@ -611,11 +616,22 @@ GroupGraphPatternSub
     : TriplesBlock? GroupGraphPatternSubTail* -> $1 ? unionAll([$1], $2) : unionAll($2)
     ;
 GroupGraphPatternSubTail
-    : GraphPatternNotTriples '.'? TriplesBlock? -> $3 ? [$1, $3] : $1
+    : GraphPatternNotTriplesError '.'? TriplesBlock? -> $3 ? [$1, $3] : $1
     ;
 TriplesBlock
     : TriplesTemplate /* Because of path prunning */
     ;
+GraphPatternNotTriplesError
+    : GraphPatternNotTriples
+    | 'OPTIONAL' error -> "OPTIONALerror"
+    | 'MINUS' error -> "MINUSerror"
+    | 'GRAPH' error -> "GRAPHerror"
+    | 'SERVICE' error -> "SERVICEerror"
+    | 'FILTER' error -> "FILTERerror"
+    | 'BIND' error -> "BINDerror"
+    | 'VALUES' error -> "VALUESerror"
+    ;
+
 GraphPatternNotTriples
     : ( GroupGraphPattern 'UNION' )* GroupGraphPattern -> $1.length ? { type: 'union', patterns: unionAll($1.map(degroupSingle), [degroupSingle($2)]) } : degroupSingle($2)
     | 'OPTIONAL' GroupGraphPattern -> extend($2, { type: 'optional' })
