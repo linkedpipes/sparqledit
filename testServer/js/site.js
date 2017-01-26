@@ -3,6 +3,16 @@ function removeKeysFromStack(stack) {
         return stack[x];
     });
 }
+function setParserResultInScope($scope, parserResult) {
+    var parserErrors = [];
+    if (parserResult.parserErrors) {
+        parserErrors = parserResult.parserErrors;
+        delete parserResult.parserErrors;
+    }
+    setEditorErrors(parserErrors);
+    $scope.parserOutput = parserResult;
+    $scope.parserErrors = parserErrors;
+}
 
 function runParser(parser, $scope, runLexer) {
     $scope.lexerErrorOutput = null;
@@ -20,7 +30,7 @@ function runParser(parser, $scope, runLexer) {
 
     try {
         var parserResult = parser.parse(parserInput);
-        $scope.parserOutput = parserResult;
+        setParserResultInScope($scope, parserResult);
         $scope.parserLog = parser.parserDebugger;
     } catch (error) {
         $scope.parserLog = parser.parserDebugger;
@@ -38,7 +48,7 @@ var testServerApp = angular
     .config(function ($sceProvider) {
         $sceProvider.enabled(false);
     });;
-    
+
 testServerApp.directive("collapsible", ["$timeout", function ($timeout) {
     return {
         link: function (scope, element, attrs) {
@@ -49,13 +59,53 @@ testServerApp.directive("collapsible", ["$timeout", function ($timeout) {
     };
 }]);
 
+var editor;
+
+function setEditorErrors(errors) {
+    var model = editor.getModel();
+    var markers = errors.map(function (error) {
+        return {
+            severity: monaco.Severity.Error,
+            code: null,
+            source: null,
+            startLineNumber: error.yylocStart.last_line,
+            startColumn: error.yylocStart.last_column,
+            endLineNumber: error.yylocEnd.last_line,
+            endColumn: error.yylocEnd.last_column,
+            message: error.type,
+        }
+    });
+
+    monaco.editor.setModelMarkers(model, 'sparql', markers);
+}
+
+function initMonacoEditor(text, $scope) {
+    require.config({ paths: { 'vs': 'node_modules/monaco-editor/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+        monaco.languages.register({ id: 'sparql' });
+        editor = monaco.editor.create(document.getElementById('queryEditorContainer'), {
+            value: text,
+            language: 'sparql'
+        });
+
+        editor.onDidChangeModelContent(function (e) {
+            $scope.$apply(function () {
+                $scope.queryInput = editor.getValue();
+                if($scope.interactive) {
+                    $scope.runNewParserClick();
+                }
+            });
+        });
+
+    });
+}
 
 
 // Define the `PhoneListController` controller on the `testServerApp` module
 testServerApp
     .controller('SparqlTestController', ['$scope', '$cookies', function SparqlTestController($scope, $cookies) {
         $scope.getItemSetReferences = getItemSetReferences;
-
+        $scope.interactive = false;
         $scope.showLexerOutput = $cookies.get('showLexerOutput') == 'true';
         $scope.showParserOutput = $cookies.get('showParserOutput') == 'true';
         $scope.showParserLog = $cookies.get('showParserLog') == 'true';
@@ -67,8 +117,11 @@ testServerApp
         $scope.parserOutput = null;
         $scope.parserErrorOutput = null;
         $scope.lexerErrorOutput = null;
+        $scope.parserErrors = [];
         $scope.queryInput = $cookies.get('queryInput');
         $scope.parserVisualiser = $scope.showParserStates ? new parserVisualiser(new ERSParser()) : {};
+
+        initMonacoEditor($scope.queryInput, $scope);
 
         $scope.runNewParserClick = function () {
             var parser = new ERSParser();
@@ -81,9 +134,9 @@ testServerApp
         };
 
 
-        $scope.queryInputChanged = function () {
-            $cookies.put('queryInput', $scope.queryInput);
-        }
+        $scope.$watch('queryInput', function (newValue, oldValue) {
+            $cookies.put('queryInput', newValue);
+        });
 
         $scope.showCheckBoxChanged = function () {
             $cookies.put('showLexerOutput', $scope.showLexerOutput);
