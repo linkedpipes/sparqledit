@@ -22,34 +22,13 @@
 
 <body ng-controller="SparqlTestController">
     <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+    
     <div class="row">
         <div class="col s4">
             <div id="queryEditorContainer" style="height:300px;border:1px solid grey"></div>
             <button class="btn align-right" ng-click="runNewParserClick()">Run</button>
-            <button class="btn align-right" ng-click="setErrors()">Set err</button>
             <button class="btn align-right" ng-click="runOriginalParserClick()">Run Original</button>
-            <div>
-                <p>
-                    <input type="checkbox" id="showLexerOutput" ng-model="showLexerOutput" ng-change="showCheckBoxChanged()" />
-                    <label for="showLexerOutput">Show lexer output</label>
-                </p>
-                <p>
-                    <input type="checkbox" id="showParserOutput" ng-model="showParserOutput" ng-change="showCheckBoxChanged()" />
-                    <label for="showParserOutput">Show parser output</label>
-                </p>
-                <p>
-                    <input type="checkbox" id="showParserLog" ng-model="showParserLog" ng-change="showCheckBoxChanged()" />
-                    <label for="showParserLog">Show parser log</label>
-                </p>
-                <p>
-                    <input type="checkbox" id="showParserStates" ng-model="showParserStates" ng-change="showCheckBoxChanged()" />
-                    <label for="showParserStates">Show parser states</label>
-                </p>
-                <p>
-                    <input type="checkbox" id="showStack" ng-model="showStack" ng-change="showCheckBoxChanged()" />
-                    <label for="showStack">Show parser stack</label>
-                </p>
-            </div>
+            <editorsettings data="settings"></editorsettings>
             <ng-include src="'views/parserVisualiserView.html'"></ng-include>
         </div>
 

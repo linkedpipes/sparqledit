@@ -1,8 +1,40 @@
+function editorSettingItem(name, title) {
+    this.name = name;
+    this.title = title;
+}
+
+function editorSettings() {
+    this.itemsDefinitions = [];
+    this.items = {};
+}
+
+editorSettings.prototype.registerItem = function (settingsItem) {
+    this.itemsDefinitions.push(settingsItem);
+    this.items[settingsItem.name] = false;
+    return this;
+}
+
+editorSettings.prototype.loadFromCookies = function ($cookies) {
+    this.itemsDefinitions.forEach(function (itemDefinition) {
+        var itemName = itemDefinition.name;
+        var itemValue = $cookies.get('settings.' + itemName) == 'true';
+        this.items[itemName] = itemValue;
+    }, this);
+}
+
+editorSettings.prototype.saveToCookies = function ($cookies) {
+    for (var itemName in this.items) {
+        $cookies.put('settings.' + itemName, this.items[itemName]);
+    }
+}
+
+
 function removeKeysFromStack(stack) {
     return Object.keys(stack).map(function (x) {
         return stack[x];
     });
 }
+
 function setParserResultInScope($scope, parserResult) {
     var parserErrors = [];
     if (parserResult.parserErrors) {
@@ -91,7 +123,7 @@ function initMonacoEditor(text, $scope) {
         editor.onDidChangeModelContent(function (e) {
             $scope.$apply(function () {
                 $scope.queryInput = editor.getValue();
-                if($scope.interactive) {
+                if ($scope.settings.items.interactiveMode) {
                     $scope.runNewParserClick();
                 }
             });
@@ -100,17 +132,29 @@ function initMonacoEditor(text, $scope) {
     });
 }
 
+testServerApp.component('editorsettings', {
+    templateUrl: 'views/settings.html',
+    bindings: { data: "=" },
+    controller: ['$cookies', function ($cookies) {
+        this.checkBoxChanged = function () {
+            this.data.saveToCookies($cookies);
+        }
+    }]
+});
 
 // Define the `PhoneListController` controller on the `testServerApp` module
 testServerApp
     .controller('SparqlTestController', ['$scope', '$cookies', function SparqlTestController($scope, $cookies) {
         $scope.getItemSetReferences = getItemSetReferences;
-        $scope.interactive = false;
-        $scope.showLexerOutput = $cookies.get('showLexerOutput') == 'true';
-        $scope.showParserOutput = $cookies.get('showParserOutput') == 'true';
-        $scope.showParserLog = $cookies.get('showParserLog') == 'true';
-        $scope.showStack = $cookies.get('showStack') == 'true';
-        $scope.showParserStates = $cookies.get('showParserStates') == 'true';
+
+        $scope.settings = (new editorSettings())
+            .registerItem(new editorSettingItem('showLexerOutput', 'Show lexer output'))
+            .registerItem(new editorSettingItem('showParserOutput', 'Show parser output'))
+            .registerItem(new editorSettingItem('showParserLog', 'Show parser log'))
+            .registerItem(new editorSettingItem('showParserStates', 'Show parser states'))
+            .registerItem(new editorSettingItem('showStack', 'Show parser stack'))
+            .registerItem(new editorSettingItem('interactiveMode', 'Interactive mode'));
+        $scope.settings.loadFromCookies($cookies);
 
         $scope.parserLog = null;
         $scope.lexerOutput = null;
@@ -119,7 +163,7 @@ testServerApp
         $scope.lexerErrorOutput = null;
         $scope.parserErrors = [];
         $scope.queryInput = $cookies.get('queryInput');
-        $scope.parserVisualiser = $scope.showParserStates ? new parserVisualiser(new ERSParser()) : {};
+        $scope.parserVisualiser = $scope.settings.items.showParserStates ? new parserVisualiser(new ERSParser()) : {};
 
         initMonacoEditor($scope.queryInput, $scope);
 
@@ -133,16 +177,7 @@ testServerApp
             runParser(parser, $scope, false);
         };
 
-
         $scope.$watch('queryInput', function (newValue, oldValue) {
             $cookies.put('queryInput', newValue);
         });
-
-        $scope.showCheckBoxChanged = function () {
-            $cookies.put('showLexerOutput', $scope.showLexerOutput);
-            $cookies.put('showParserOutput', $scope.showParserOutput);
-            $cookies.put('showParserLog', $scope.showParserLog);
-            $cookies.put('showStack', $scope.showStack);
-            $cookies.put('showParserStates', $scope.showParserStates);
-        }
     }]);

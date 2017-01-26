@@ -11,7 +11,7 @@
                 <li class="collection-item">Value: {{::step.text}}</li>
                 <li class="collection-item">Lookahead: Normal ({{::step.symbol}}) Error({{::step.preErrorSymbol}})</li>
                 <li class="collection-item" ng-init="stack=step.stack" ng-include="'./views/debugger/stackView.html'"></li>
-                <li class="collection-item" ng-if="showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
+                <li class="collection-item" ng-if="settings.items.showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
             </ul>
         </div>
 
@@ -29,8 +29,8 @@
                 <li class="collection-item">Productions: {{::step.productions | json}} </li>
                 <li class="collection-item">Result: {{::step.result | json}} </li>
                 <li class="collection-item" ng-init="stack=step.stack" ng-include="'./views/debugger/stackView.html'"></li>
-                <li class="collection-item" ng-if="showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
-            </ul>
+                <li class="collection-item" ng-if="settings.items.showStack" ng-init="stateStack=step.allstack" ng-include="'./views/debugger/stateStackView.html'"></li>
+            </u>
         </div>
         <!--Reduce end-->
 

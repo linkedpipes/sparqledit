@@ -27,7 +27,7 @@
         </p>
     </div>
 </div>
-<div class="card blue" ng-show="(parserOutput != null) && showParserOutput">
+<div class="card blue" ng-show="(parserOutput != null) && settings.items.showParserOutput">
     <div class="card-content white-text">
         <span class="card-title">Parser result</span>
         <p>
@@ -53,14 +53,14 @@
     </div>
 </div>
 
-<div class="card blue" ng-show="(lexerOutput != null) && showLexerOutput">
+<div class="card blue" ng-show="(lexerOutput != null) &&  settings.items.showLexerOutput">
     <div class="card-content white-text">
         <span class="card-title">Lexer output</span>
         <p>{{lexerOutput}}</p>
     </div>
 </div>
 
-<div class="card green lighten-3" ng-if="(parserLog != null) && showParserLog">
+<div class="card green lighten-3" ng-if="(parserLog != null) &&  settings.items.showParserLog">
     <div class="card-content">
         <span class="card-title">Parser log</span>
         <div>
