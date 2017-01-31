@@ -1,0 +1,42 @@
+                function isTerminalReallyExpected(terminal, productions, table, stack) {
+                    var state = stack[stack.length-1];
+                    var action = table[state][terminal];
+                    
+                    if(action === undefined) {
+                        // Not defined action
+                        return false;
+                    }
+
+                    var actionType = action[0];
+                    if(actionType == 1) {
+                        // Shift
+                        return true;
+                    }
+
+                    if(actionType == 2)
+                    {
+                        // Reduce
+                        var production = productions[action[1]];
+                        var len = production[1];
+                        if (len) {
+                            stack = stack.slice(0,-1*len*2);
+                        }
+                        stack.push(production[0]);    // push nonterminal (reduce)
+                        var newState = table[stack[stack.length-2]][stack[stack.length-1]];
+                        stack.push(newState);
+                        return isTerminalReallyExpected(terminal, productions, table, stack);
+                    }
+
+                    throw new Error("Unknown state of action.");
+                }
+
+                expected = [];
+                var reallyExpected = [];
+                for (p in table[state]) {
+                    if (this.terminals_[p] && p > TERROR) {
+                        expected.push("'"+this.terminals_[p]+"'");
+                        if(isTerminalReallyExpected(p, this.productions_, table, stack.slice(0))) {
+                            reallyExpected.push(this.terminals_[p]);
+                        }
+                    }
+                }

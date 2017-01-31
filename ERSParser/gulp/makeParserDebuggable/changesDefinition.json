@@ -3,5 +3,6 @@
     "shift",
     "reduce",
     "accept",
-    "popStack"
+    "popStack",
+    "expectedTerminals"
 ]
