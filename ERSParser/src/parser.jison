@@ -188,6 +188,20 @@
     catch (error) { return ''; }
     return '"' + string + '"';
   }
+  var parserErrors = []; 
+
+  Parser.resetParserErrors = function(){
+      parserErrors = []; 
+  };
+
+  function logParserError(type, yylocStart, yylocEnd){
+      var parserError = {
+            type:type,
+            yylocStart:yylocStart,
+            yylocEnd:yylocEnd
+      };
+      parserErrors.push(parserError);
+  }
 
   function createError(type, value, yyloc, stack) {
         var result = { 
@@ -401,8 +415,14 @@ PN_LOCAL_ESC          "\\"("_"|"~"|"."|"-"|"!"|"$"|"&"|"'"|"("|")"|"*"|"+"|","|"
 
 %%
 StartNeterminal
-    : QueryOrUpdateUnit EOF
-//    | QueryOrUpdateUnit error EOF
+    : QueryOrUpdateUnit EOF 
+    {
+        if(parserErrors.length > 0 ) {
+            extend($1,{parserErrors:parserErrors});
+        }
+        return $1;
+    } 
+//    | QueryOrUpdateUnit error EOF 
     ;
 QueryOrUpdateUnit
     : ( BaseDecl | PrefixDecl )* ( Query | Update ) 
@@ -412,7 +432,7 @@ QueryOrUpdateUnit
       Parser.base = base = basePath = baseRoot = '';
       $2.prefixes = Parser.prefixes;
       Parser.prefixes = null;
-      return $2;
+      $$ = $2;
     }
     ;
 Query
@@ -616,20 +636,56 @@ GroupGraphPatternSub
     : TriplesBlock? GroupGraphPatternSubTail* -> $1 ? unionAll([$1], $2) : unionAll($2)
     ;
 GroupGraphPatternSubTail
-    : GraphPatternNotTriplesError '.'? TriplesBlock? -> $3 ? [$1, $3] : $1
+    : GraphPatternNotTriplesError '.'? TriplesBlock? 
+    {
+        if($3) {
+            if($1 == null){
+                $$ = [$3];
+            }
+            else {
+                $$ = [$1, $3];
+            }            
+        }
+        else {
+            $$ = $1;
+        }
+    }
     ;
 TriplesBlock
     : TriplesTemplate /* Because of path prunning */
     ;
 GraphPatternNotTriplesError
     : GraphPatternNotTriples
-    | 'OPTIONAL' error -> "OPTIONALerror"
-    | 'MINUS' error -> "MINUSerror"
-    | 'GRAPH' error -> "GRAPHerror"
-    | 'SERVICE' error -> "SERVICEerror"
-    | 'FILTER' error -> "FILTERerror"
-    | 'BIND' error -> "BINDerror"
-    | 'VALUES' error -> "VALUESerror"
+    | 'OPTIONAL' error 
+    {
+        logParserError('OPTIONAL error', @1, @2);
+        $$ = null;
+    }
+    | 'GRAPH' error 
+    {
+        logParserError('GRAPH error', @1, @2);
+        $$ = null;
+    }
+    | 'SERVICE' error 
+    {
+        logParserError('SERVICE error', @1, @2);
+        $$ = null;
+    }
+    | 'FILTER' error 
+    {
+        logParserError('FILTER error', @1, @2);
+        $$ = null;
+    }
+    | 'BIND' error 
+    {
+        logParserError('BIND error', @1, @2);
+        $$ = null;
+    }
+    | 'VALUES' error 
+    {
+        logParserError('VALUES error', @1, @2);
+        $$ = null;
+    }
     ;
 
 GraphPatternNotTriples
@@ -663,7 +719,10 @@ ConstructTriples
     ;
 TriplesSameSubjectError
     : TriplesSameSubject
-    | error -> createError('TriplesSameSubjectErrorBefore', $1, @1)
+    | error { 
+        $$ = [];
+        logParserError("Triple Problem", @-0, @1);
+    }
     ;
 TriplesSameSubject
     : VarOrTerm PropertyListNotEmpty -> $2.map(function (t) { return extend(triple($1), t); })
@@ -680,7 +739,11 @@ SnadToChapu
     ;
 VerbObjectListError
     : VerbObjectList
-    | error -> createError('VerbObjectListError', $1, @1);
+    | error 
+    { 
+        $$ = [];
+        logParserError("Verb problem", @-1, @1);
+    }
     ;
 VerbObjectList
     : Verb ObjectList -> objectListToTriples($1, $2)
@@ -698,7 +761,11 @@ Nechapu
     ;
 GraphNodeError
     : GraphNode
-    | error { $$ = { entity: createError('GraphNode', $1, @1) , triples: []  };}
+    | error 
+    { 
+        $$ = [];
+        logParserError("graphnode", @-1, @1);
+    }
     ;
 TriplesNode
     : '(' GraphNode+ ')' -> createList($2)
