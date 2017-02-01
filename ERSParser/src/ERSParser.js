@@ -13,24 +13,58 @@ function showTerminals(parser, input) {
   return result;
 }
 
+function ERSParserError(message, hash) {
+  var hashLoc = hash.loc;
+  this.originalMessage = message;
+  this.loc = {
+    first_line: hashLoc.first_line,
+    first_column: hashLoc.first_column,
+    last_line: hashLoc.last_line,
+    last_column: hashLoc.last_column
+  };
+
+  this.expected = hash.reallyExpected;
+  this.problemToken = hash.token;
+}
+
+function updateHaltParserErrorLoc(parserErrors, last_line, last_column) {
+  if (parserErrors.length < 1) {
+    return;
+  }
+  var parserErrorLoc = parserErrors[parserErrors.length - 1].loc;
+  parserErrorLoc.first_line = parserErrorLoc.last_line;
+  parserErrorLoc.first_column = parserErrorLoc.last_column;
+  parserErrorLoc.last_line = last_line;
+  parserErrorLoc.last_column = last_column;
+}
 
 function ERSParser(prefixes, baseIRI) {
-
   var prefixesCopy = {};
   for (var prefix in prefixes || {}) {
     prefixesCopy[prefix] = prefixes[prefix];
   }
 
   var parser = new Parser();
-  parser.traceMessages = [];
-  parser.trace = function (message) {
-    this.traceMessages.push(message);
+
+  parser.tracedParserErrors = [];
+  parser.trace = function (message, hash) {
+    this.tracedParserErrors.push(new ERSParserError(message, hash));
   }
 
   parser.parse = function () {
+    Parser.resetParserErrors();
     Parser.base = baseIRI || '';
     Parser.prefixes = Object.create(prefixesCopy);
-    var res = Parser.prototype.parse.apply(parser, arguments);
+    try {
+      var res = Parser.prototype.parse.apply(parser, arguments);
+    }
+    catch (e) {
+      var lines = arguments[0].split(/\r?\n/gm);
+      updateHaltParserErrorLoc(parser.tracedParserErrors,
+        lines.length,
+        lines[lines.length - 1].length + 1);
+      throw e;
+    }
     return res;
   };
 

@@ -9,8 +9,11 @@
                 <li class="collection-item">
                     Trace messages:
                     <ul class="collection">
-                        <li class="collection-item black-text" ng-repeat="message in parserErrorOutput.traceMessages">
-                            {{message}}
+                        <li class="collection-item black-text" ng-repeat="parserError in parserErrorOutput.tracedParserErrors">
+                            Unexpected token '{{parserError.problemToken}}', expected one of 
+                            <span ng-repeat="expectedToken in parserError.expected">
+                                 '{{expectedToken}}' {{$last ? '' : ', '}}
+                            </span>
                         </li>
                     </ul>
                 </li>

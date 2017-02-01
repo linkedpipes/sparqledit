@@ -1,0 +1,4 @@
+    if (hash.recoverable) {
+        this.trace(str, hash);
+    } else {
+        this.trace(str, hash);

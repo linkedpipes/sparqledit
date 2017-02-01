@@ -69,7 +69,26 @@ function runParser(parser, $scope, runLexer) {
         $scope.parserOutput = null;
         $scope.parserErrorOutput = {
             message: error.message,
-            traceMessages: parser.traceMessages
+            tracedParserErrors: parser.tracedParserErrors
+        };
+        if (parser.tracedParserErrors.length > 0) {
+            var haltParserError = parser.tracedParserErrors[parser.tracedParserErrors.length - 1];
+            var editorError = {
+                type: 'unnexpected ' + haltParserError.problemToken,
+                yylocStart: {
+                    last_line: haltParserError.loc.first_line,
+                    last_column: haltParserError.loc.first_column,
+                    first_line: -1,
+                    first_column: -1
+                },
+                yylocEnd: {
+                    first_line: -1,
+                    first_column: -1,
+                    last_line: haltParserError.loc.last_line,
+                    last_column: haltParserError.loc.last_column,
+                }
+            };
+            setEditorErrors([editorError]);
         };
     }
 }
