@@ -6,10 +6,12 @@
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir": "bin",
-        "sourceMap": true
+        "sourceMap": true,
+        "sourceRoot": "."
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "test/**/*"
     ],
     "exclude": [
         "node_modules",

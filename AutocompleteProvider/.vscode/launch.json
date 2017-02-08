@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch program",
             "program": "${workspaceRoot}/src/run.ts",
             "cwd": "${workspaceRoot}",
             "sourceMaps": true,
@@ -20,9 +20,26 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program without build",
+            "name": "Launch program without build",
             "program": "${workspaceRoot}/src/run.ts",
             "cwd": "${workspaceRoot}",
+            "sourceMaps": true,
+            "outFiles": [
+                "${workspaceRoot}/bin/**/*.js"
+            ],
+            "internalConsoleOptions": "openOnSessionStart"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug mocha tests",
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "preLaunchTask": "build",
+            "args": [
+                "--timeout",
+                "999999",
+                "${workspaceRoot}/bin/test"
+            ],
             "sourceMaps": true,
             "outFiles": [
                 "${workspaceRoot}/bin/**/*.js"
