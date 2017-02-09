@@ -2,12 +2,12 @@
     "compilerOptions": {
         "module": "commonjs",
         "baseUrl": "src",
+        "target": "es5",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "outDir": "bin",
-        "sourceMap": true,
-        "sourceRoot": "."
+        "sourceMap": true
     },
     "include": [
         "src/**/*",

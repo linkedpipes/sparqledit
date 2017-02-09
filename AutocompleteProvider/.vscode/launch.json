@@ -41,6 +41,7 @@
                 "${workspaceRoot}/bin/test"
             ],
             "sourceMaps": true,
+            "cwd": "${workspaceRoot}/bin/test",
             "outFiles": [
                 "${workspaceRoot}/bin/**/*.js"
             ],
