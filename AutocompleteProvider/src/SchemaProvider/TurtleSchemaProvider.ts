@@ -1,3 +1,4 @@
+import {RdfIri} from '../SchemaDefinition/RdfIri';
 import { ClassDefinition } from '../SchemaDefinition/ClassDefinition';
 import { PropertyDefinition } from '../SchemaDefinition/PropertyDefinition';
 import { Schema } from '../SchemaDefinition/Schema';
@@ -7,13 +8,7 @@ var rdf = require('rdf');
 
 
 export class TurtleSchemaProvider implements ISchemaProvider {
-    private rdfType = "http://www.w3.org/1999/02/22-rdf-syntax-ns#type";
-    private rdfsClass = "http://www.w3.org/2000/01/rdf-schema#Class";
-    private rdfsProperty = "http://www.w3.org/2000/01/rdf-schema#Property";
-    private rdfsDomain = "http://www.w3.org/2000/01/rdf-schema#domain";
-    private rdfsRange = "http://www.w3.org/2000/01/rdf-schema#range";
-    private rdfsLabel = "http://www.w3.org/2000/01/rdf-schema#label";
-
+    
     constructor(private turtleContent: string) {
 
     }
@@ -35,7 +30,7 @@ export class TurtleSchemaProvider implements ISchemaProvider {
     }
 
     private getClassNames(graph: any) {
-        var classesTriples = graph.match(null, this.rdfType, this.rdfsClass);
+        var classesTriples = graph.match(null, RdfIri.rdfType, RdfIri.rdfsClass);
         var classNames = classesTriples.map((x: any) => {
             var classNode = x.subject;
             if (classNode.nodeType() != 'IRI') {
@@ -48,7 +43,7 @@ export class TurtleSchemaProvider implements ISchemaProvider {
     }
 
     private getPropertiesNames(graph: any) {
-        var propertiesTriples = graph.match(null, this.rdfType, this.rdfsProperty);
+        var propertiesTriples = graph.match(null, RdfIri.rdfType, RdfIri.rdfsProperty);
         var propertiesNames = propertiesTriples.map((x: any) => {
             var propertyNode = x.subject;
             if (propertyNode.nodeType() != 'IRI') {
@@ -82,9 +77,9 @@ export class TurtleSchemaProvider implements ISchemaProvider {
 
         for (var propertyName of propertiesNames) {
             // TODO: check for null and warn
-            var range: string = this.extractObjectFromGraph(graph, propertyName, this.rdfsRange);
-            var domain: string = this.extractObjectFromGraph(graph, propertyName, this.rdfsDomain);
-            var label: string = this.extractObjectFromGraph(graph, propertyName, this.rdfsLabel) || "";
+            var range: string = this.extractObjectFromGraph(graph, propertyName, RdfIri.rdfsRange);
+            var domain: string = this.extractObjectFromGraph(graph, propertyName, RdfIri.rdfsDomain);
+            var label: string = this.extractObjectFromGraph(graph, propertyName, RdfIri.rdfsLabel) || "";
 
             var currentPropertyDefinition = new PropertyDefinition(propertyName,
                 domain,
@@ -103,7 +98,7 @@ export class TurtleSchemaProvider implements ISchemaProvider {
 
         for (var className of classNames) {
             var currentPropertyDefinitions = propertyDefinitions.filter(x => x.domain == className);
-            var label: string = this.extractObjectFromGraph(graph, className, this.rdfsLabel) || "";
+            var label: string = this.extractObjectFromGraph(graph, className, RdfIri.rdfsLabel) || "";
             var currentClassDefinition = new ClassDefinition(className, currentPropertyDefinitions);
             currentClassDefinition.label = label;
             classDefinitions.push(currentClassDefinition);

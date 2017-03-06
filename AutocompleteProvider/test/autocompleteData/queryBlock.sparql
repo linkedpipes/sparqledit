@@ -1,0 +1,12 @@
+select * where {
+    ?a ?b true.
+    ?a ?b _:empty.
+    ?a ?b "string".
+    ?a ?b 5.
+    ?a ?b [].
+    ?a ?b $var.
+    ?a ?b ?var.
+    ?a ?b "asdf"@en.
+    ?a ?b nil.
+    ?a ?b <http://example.org/example>.
+}
