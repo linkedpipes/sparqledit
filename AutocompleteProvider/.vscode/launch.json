@@ -38,7 +38,9 @@
             "args": [
                 "--timeout",
                 "999999",
-                "${workspaceRoot}/bin/test"
+                "${workspaceRoot}/bin/test",
+                "--grep",
+                "owl"
             ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}/bin/test",

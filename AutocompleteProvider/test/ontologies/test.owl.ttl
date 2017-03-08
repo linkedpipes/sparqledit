@@ -1,0 +1,76 @@
+@prefix :<http://example.org/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/test>
+  a owl:Ontology ;
+  rdfs:comment "Test ontology".
+
+:Human a owl:Class;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            :Woman
+            :Man
+        )
+    ].
+
+:Parent a owl:Class;
+  owl:equivalentClass [
+    a owl:Restriction ;
+    owl:onProperty :isParentOf ;
+    owl:someValuesFrom :Human
+  ].
+
+:Father a owl:Class;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            :Man
+            :Parent
+        )
+    ].
+
+:Father a owl:Class;
+    owl:equivalentClass :Dad.
+
+
+:NotGoodMathFather a owl:Class;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:unionOf (
+            [
+            a owl:Class ;
+            owl:intersectionOf (
+                :Man
+                :Parent
+            )]
+            [
+                a owl:Restriction ;
+                owl:onProperty :HumanMathSkills ;
+                owl:hasValue "1"^^xsd:string.                
+            ]
+        )
+    ].
+
+:MathHuman a owl:Class;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty :HumanMathSkills ;
+        owl:hasValue "5"^^xsd:string.
+    ].
+
+:HumanName a owl:DatatypeProperty;
+    rdfs:domain :Human;
+    rdfs:range xsd:string.
+
+:HumanMathSkills a owl:DatatypeProperty;
+    rdfs:domain :Human;
+    rdfs:range xsd:integer.
+
+:hasParent
+  a owl:ObjectProperty, owl:InverseFunctionalProperty, owl:FunctionalProperty ;
+  rdfs:range :Human ;
+  rdfs:domain :Human ;
+  owl:inverseOf :isParentOf .
