@@ -1,0 +1,34 @@
+@prefix :<http://example.org/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:Node0 a owl:Class;
+    rdfs:subClassOf :Node4.
+
+:Node1 a owl:Class;
+    rdfs:subClassOf :Node0;
+    rdfs:subClassOf :Node2.
+
+:Node2 a owl:Class;
+    rdfs:subClassOf :Node1;
+    rdfs:subClassOf :Node3.
+
+:Node3 a owl:Class;
+    rdfs:subClassOf :Node2.
+
+:Node4 a owl:Class;
+    rdfs:subClassOf :Node1.
+
+:Node5 a owl:Class;
+    rdfs:subClassOf :Node4;
+    rdfs:subClassOf :Node6.
+
+:Node6 a owl:Class;
+    rdfs:subClassOf :Node5;
+    rdfs:subClassOf :Node2.
+
+:Node7 a owl:Class;
+    rdfs:subClassOf :Node7;
+    rdfs:subClassOf :Node6;
+    rdfs:subClassOf :Node3.

@@ -11,6 +11,5 @@ describe("TurtleSchemaProvider", () => {
     it("should parse simple turtle schema.", () => {
         var schemaProvider = new TurtleSchemaProvider(getExampleTurtleContent());
         var schema = schemaProvider.getSchema();
-        console.log(schema);
     });
 })

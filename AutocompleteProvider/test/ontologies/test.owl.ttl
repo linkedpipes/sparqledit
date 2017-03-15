@@ -15,13 +15,15 @@
             :Man
         )
     ].
-
 :Parent a owl:Class;
   owl:equivalentClass [
     a owl:Restriction ;
     owl:onProperty :isParentOf ;
     owl:someValuesFrom :Human
   ].
+
+:CleverParent a owl:Class;
+    rdfs:subClassOf :Parent.
 
 :Father a owl:Class;
     owl:equivalentClass [

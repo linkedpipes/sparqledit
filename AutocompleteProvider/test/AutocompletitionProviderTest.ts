@@ -34,8 +34,6 @@ describe('AutocompleteProvider', () => {
                     type: NodeType[x.object.type],
                     value: x.object.value
                 }));
-
-            console.log(block);
         })
     });
 })

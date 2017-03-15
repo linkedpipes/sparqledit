@@ -1,0 +1,58 @@
+@prefix : <http://example.org/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:Human a owl:Class;
+    owl:equivalentClass [
+        a owl:Class;
+        owl:unionOf (:Man :Woman)
+    ].
+
+:Parent a owl:Class;
+    rdfs:subClassOf :Human.
+
+:GoodMath a owl:Class;
+    rdfs:subClassOf :Human.
+
+:Father a owl:Class;
+    owl:equivalentClass [
+        a owl:Class;
+        owl:intersectionOf (:Man :Parent)
+    ].
+    
+:Dad a owl:Class;
+    owl:equivalentClass :Father.
+
+:GoodMathFatherFull a owl:Class;
+    owl:equivalentClass [
+        a owl:Class;
+        owl:intersectionOf (:Man :Parent :GoodMath)
+    ].
+
+:GoodMathFatherShort a owl:Class;
+    owl:equivalentClass [
+        a owl:Class;
+        owl:intersectionOf (:Father :GoodMath)
+    ].
+
+
+
+:Man rdfs:subClassOf :Human.
+:Woman rdfs:subClassOf :Human.
+
+[ a owl:Class;
+    owl:intersectionOf (:Man :Parent :GoodMath) ] 
+        rdfs:subClassOf :Man;
+        rdfs:subClassOf :Parent;
+        rdfs:subClassOf :GoodMath.
+
+[ a owl:Class;
+    owl:intersectionOf (:Man :Parent) ]
+        rdfs:subClassOf :Man;
+        rdfs:subClassOf :Parent.
+    
+[ a owl:Class;
+    owl:intersectionOf (:Father :GoodMath) ]
+        rdfs:subClassOf :Father;
+        rdfs:subClassOf :GoodMath.

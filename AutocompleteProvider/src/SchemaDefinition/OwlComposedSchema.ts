@@ -2,25 +2,25 @@ import { RdfIri } from './RdfIri';
 import { ClassDefinition } from './ClassDefinition';
 var rdf = require('rdf');
 
-enum OwlComposedType {
+export enum OwlComposedType {
     Restriction,
     Intersection,
     Union,
     Unknown
 }
 
-interface IRDFNode {
+export interface IRDFNode {
     nominalValue: string;
     nodeType(): string;
 }
 
-interface Triple {
+export interface Triple {
     subject: IRDFNode;
     predicate: IRDFNode;
     object: IRDFNode;
 }
 
-class TriplesArray {
+export class TriplesArray {
     constructor(public triples: Triple[]) {
 
     }
@@ -55,7 +55,7 @@ class TriplesArray {
     }
 }
 
-class GraphWrapper {
+export class GraphWrapper {
     private graph: any;
     constructor(private turtleSchema: string) {
         this.graph = this.parseTurtle();
@@ -86,17 +86,17 @@ class GraphWrapper {
     }
 }
 
-interface ISchemaClass {
+export interface ISchemaClass {
     getText(): string;
 }
 
-class UnknownClass implements ISchemaClass {
+export class UnknownClass implements ISchemaClass {
     getText() {
         return 'Unknown';
     }
 }
 
-class AtomicClass implements ISchemaClass {
+export class AtomicClass implements ISchemaClass {
 
     constructor(public iri: string) {
 
@@ -107,7 +107,7 @@ class AtomicClass implements ISchemaClass {
     }
 }
 
-class RestrictionClass implements ISchemaClass {
+export class RestrictionClass implements ISchemaClass {
 
     constructor(public onProperty: string) {
 
@@ -118,7 +118,7 @@ class RestrictionClass implements ISchemaClass {
     }
 }
 
-class IntersectionClass implements ISchemaClass {
+export class IntersectionClass implements ISchemaClass {
 
     public classes: ISchemaClass[] = [];
 
@@ -132,7 +132,7 @@ class IntersectionClass implements ISchemaClass {
 
 }
 
-class UnionClass implements ISchemaClass {
+export class UnionClass implements ISchemaClass {
 
     public classes: ISchemaClass[] = [];
 
@@ -146,7 +146,7 @@ class UnionClass implements ISchemaClass {
     }
 }
 
-class ClassTypeParser {
+export class ClassTypeParser {
 
     constructor(private schemaGraph: GraphWrapper) {
 
@@ -233,7 +233,7 @@ export class OwlComposedSchema {
 
         for (var triple of subclasstriples.triples) {
             var result = classTypeParser.getIt(triple.object);
-            console.log(triple.subject + ' is ' + result.getText() + '\r\n');
+            //console.log(triple.subject + ' is ' + result.getText() + '\r\n');
         }
     }
 }

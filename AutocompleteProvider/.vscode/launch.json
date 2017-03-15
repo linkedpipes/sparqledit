@@ -40,7 +40,7 @@
                 "999999",
                 "${workspaceRoot}/bin/test",
                 "--grep",
-                "owl"
+                "GraphAlgoritm"
             ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}/bin/test",

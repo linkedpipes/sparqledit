@@ -235,7 +235,5 @@ export class AutocompleteProvider {
         ).flatten<{ variableName: string, classIri: string }>()
         .value();
         ss.forEach(x => this.inferSomeThings(context, block, x.variableName, x.classIri));
-
-        console.log(context);
     }
 }
