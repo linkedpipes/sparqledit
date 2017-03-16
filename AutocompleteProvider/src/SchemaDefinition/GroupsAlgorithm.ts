@@ -1,12 +1,9 @@
+import { GraphWrapper } from '../GraphTools/GraphWrapper';
 import { saveGraph, VisGraph } from '../Visualisation/VisGraph';
 import { RdfIri } from './RdfIri';
-import { ISchemaClass, GraphWrapper, ClassTypeParser } from "./OwlComposedSchema";
+import { ISchemaClass, ClassTypeParser } from "./ClassTypeParser";
+
 var scc = require("strongly-connected-components")
-
-
-export class PropertyDef {
-
-}
 
 export class GraphAssertions {
     public namedClasses: ISchemaClass[] = [];

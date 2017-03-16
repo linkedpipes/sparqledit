@@ -1,4 +1,4 @@
-import { UnionClass, AtomicClass } from '../src/SchemaDefinition/OwlComposedSchema';
+import { AtomicClass, UnionClass } from '../src/SchemaDefinition/ClassTypeParser';
 import { GroupsAlgorithm, GraphAssertions } from '../src/SchemaDefinition/GroupsAlgorithm';
 import * as chai from 'chai';
 import * as fs from 'fs';
