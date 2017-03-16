@@ -1,7 +1,7 @@
-import { GraphWrapper } from '../GraphTools/GraphWrapper';
-import { saveGraph, VisGraph } from '../Visualisation/VisGraph';
-import { RdfIri } from './RdfIri';
-import { ISchemaClass, ClassTypeParser } from "./ClassTypeParser";
+import {VisGraph} from '../Visualisation/VisGraph';
+import {RdfIri} from './RdfIri';
+import { ISchemaClass, ClassTypeParser } from './ClassTypeParser';
+import { TurtleGraphWrapper } from "GraphTools/TurtleGraphWrapper";
 
 var scc = require("strongly-connected-components")
 
@@ -161,7 +161,7 @@ export class GroupsAlgorithm {
     }
 
     public extreactOntologyAsertions() {
-        var schemaGraph = new GraphWrapper(this.turtleSchema);
+        var schemaGraph = new TurtleGraphWrapper(this.turtleSchema);
         var classTypeParser = new ClassTypeParser(schemaGraph);
         var result = new GraphAssertions();
 

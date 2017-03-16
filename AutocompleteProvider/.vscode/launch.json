@@ -38,9 +38,7 @@
             "args": [
                 "--timeout",
                 "999999",
-                "${workspaceRoot}/bin/test",
-                "--grep",
-                "GraphAlgoritm"
+                "${workspaceRoot}/bin/test"
             ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}/bin/test",

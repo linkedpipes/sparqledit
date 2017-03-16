@@ -1,5 +1,6 @@
-import { TriplesArray, GraphWrapper, IRDFNode } from '../GraphTools/GraphWrapper';
-import { RdfIri } from './RdfIri';
+import {IGraph, IRDFNode} from '../GraphTools/GraphInterfaces';
+import {SimpleGraph} from '../GraphTools/SimpleGraph';
+import {RdfIri} from './RdfIri';
 var rdf = require('rdf');
 
 export enum OwlComposedType {
@@ -71,7 +72,7 @@ export class UnionClass implements ISchemaClass {
 
 export class ClassTypeParser {
 
-    constructor(private schemaGraph: GraphWrapper) {
+    constructor(private schemaGraph: IGraph) {
 
     }
 
@@ -105,7 +106,7 @@ export class ClassTypeParser {
         return new UnknownClass();
     }
 
-    private parseRestriction(currentTriples: TriplesArray, propertyTriples: TriplesArray) {
+    private parseRestriction(currentTriples: IGraph, propertyTriples: IGraph) {
         var triple = propertyTriples.getFirst();
         return new RestrictionClass(triple.object.nominalValue);
     }
@@ -113,7 +114,7 @@ export class ClassTypeParser {
 
     }
 
-    private parseIntersection(currentTriples: TriplesArray, propertyTriples: TriplesArray) {
+    private parseIntersection(currentTriples: IGraph, propertyTriples: IGraph) {
         // TODO: Can go wrong 
         var unionNode = propertyTriples.getFirst().object.nominalValue;
         // TOD: Can throw exception
@@ -127,7 +128,7 @@ export class ClassTypeParser {
         return result;
     }
 
-    private parseUnion(currentTriples: TriplesArray, propertyTriples: TriplesArray) {
+    private parseUnion(currentTriples: IGraph, propertyTriples: IGraph) {
         // TODO: Can go wrong 
         var unionNode = propertyTriples.getFirst().object.nominalValue;
         // TOD: Can throw exception
