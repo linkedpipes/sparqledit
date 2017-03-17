@@ -12,6 +12,7 @@ export interface ITriple {
 }
 
 export interface IGraph {
+    getTriples(): ITriple[]
     match(subject: string, predicate: string, object: string): IGraph
     anyObject(subject: string, predicate: string): IRDFNode
     eachObject(subject: string, predicate: string): IRDFNode[]

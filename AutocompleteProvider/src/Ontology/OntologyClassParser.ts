@@ -1,81 +1,9 @@
-import { IGraph, IRDFNode, RDFNodeType } from '../GraphTools/GraphInterfaces';
-import { SimpleGraph } from '../GraphTools/SimpleGraph';
-import { RdfIri } from './RdfIri';
+import {IOntologyClass, AtomicClass, UnknownClass, RestrictionClass, IntersectionClass, UnionClass} from './OntologyClass';
+import {IGraph, IRDFNode} from '../GraphTools/GraphInterfaces';
+import {RdfIri} from '../SchemaDefinition/RdfIri';
 var rdf = require('rdf');
 
-export enum OwlComposedType {
-    Restriction,
-    Intersection,
-    Union,
-    Unknown
-}
-
-export interface ISchemaClass {
-    getText(): string;
-}
-
-export class UnknownClass implements ISchemaClass {
-
-    constructor(public nodeValue: string) {
-
-    }
-
-    getText() {
-        return 'Unknown(' + this.nodeValue + ')';
-    }
-}
-
-export class AtomicClass implements ISchemaClass {
-
-    constructor(public iri: string) {
-
-    }
-
-    getText() {
-        return 'Atomic(' + this.iri + ')';
-    }
-}
-
-export class RestrictionClass implements ISchemaClass {
-
-    constructor(public onProperty: string) {
-
-    }
-
-    getText() {
-        return 'RestrictionOn(' + this.onProperty + ')';
-    }
-}
-
-export class IntersectionClass implements ISchemaClass {
-
-    public classes: ISchemaClass[] = [];
-
-    addClass(schemaClass: ISchemaClass) {
-        this.classes.push(schemaClass);
-        return this;
-    }
-    getText() {
-        return 'Intersection(' + this.classes.map(x => x.getText()).join(', ') + ')';
-    }
-
-}
-
-export class UnionClass implements ISchemaClass {
-
-    public classes: ISchemaClass[] = [];
-
-    addClass(schemaClass: ISchemaClass) {
-        this.classes.push(schemaClass);
-        return this;
-    }
-
-    public getText() {
-        return 'Union(' + this.classes.map(x => x.getText()).join(', ') + ')';
-    }
-}
-
-export class ClassTypeParser {
+export class OntologyClassParser {
     private _schemaGraph: IGraph
 
     constructor(schemaGraph: IGraph) {
@@ -86,7 +14,7 @@ export class ClassTypeParser {
         return this._schemaGraph;
     }
 
-    public getClassType(classNode: IRDFNode): ISchemaClass {
+    public getClassType(classNode: IRDFNode): IOntologyClass {
         var nodeType = classNode.nodeType();
         if (nodeType == "IRI") {
             return new AtomicClass(classNode.nominalValue)

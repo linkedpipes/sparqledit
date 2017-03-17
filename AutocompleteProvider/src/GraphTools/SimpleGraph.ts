@@ -6,6 +6,10 @@ export class SimpleGraph implements IGraph {
 
     }
 
+    getTriples(): ITriple[] {
+        return this.triples;
+    }
+
     public match(subject: string, predicate: string, object: string) {
         var resultTriples = this.triples.filter((x) =>
             (subject == null || x.subject.nominalValue == subject) &&

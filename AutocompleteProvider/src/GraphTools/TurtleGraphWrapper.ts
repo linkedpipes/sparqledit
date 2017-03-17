@@ -3,7 +3,9 @@ import { SimpleGraph } from './SimpleGraph';
 var rdf = require('rdf');
 
 export class TurtleGraphWrapper implements IGraph {
+
     private graph: any;
+
     constructor(private turtleSchema: string) {
         this.graph = this.parseTurtle();
     }
@@ -23,6 +25,10 @@ export class TurtleGraphWrapper implements IGraph {
         }
         // TODO: Check for nulls
         return result;
+    }
+
+    getTriples(): ITriple[] {
+        return this.graph.match(null, null, null);
     }
 
     public match(subject: any, predicate: any, object: any) {

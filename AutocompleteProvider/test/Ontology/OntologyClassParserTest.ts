@@ -1,7 +1,9 @@
-import { RdfIri } from '../src/SchemaDefinition/RdfIri';
-import { TurtleGraphWrapper } from '../src/GraphTools/TurtleGraphWrapper';
-import { IRDFNode } from '../src/GraphTools/GraphInterfaces';
-import { AtomicClass, UnionClass, IntersectionClass, UnknownClass, ClassTypeParser } from '../src/SchemaDefinition/ClassTypeParser';
+import {TurtleGraphWrapper} from '../../src/GraphTools/TurtleGraphWrapper';
+import {OntologyClassParser} from '../../src/Ontology/OntologyClassParser';
+import {IRDFNode} from '../../src/GraphTools/GraphInterfaces';
+import {RdfIri} from '../../src/SchemaDefinition/RdfIri';
+import {UnionClass, AtomicClass, IntersectionClass, UnknownClass} from '../../src/Ontology/OntologyClass';
+
 import * as chai from 'chai';
 import * as fs from 'fs';
 var rdf = require('rdf');
@@ -9,13 +11,13 @@ var rdf = require('rdf');
 var iriBasePrefix = "http://example.org/test#";
 
 function createTestParser() {
-    var ontologyContent = fs.readFileSync(__dirname + '/ontologies/classtypeparser.ttl').toString();
+    var ontologyContent = fs.readFileSync(__dirname + "/resources/ontologyClassParserTest.ttl").toString();
     var graph = new TurtleGraphWrapper(ontologyContent);
-    var parser = new ClassTypeParser(graph);
+    var parser = new OntologyClassParser(graph);
     return parser;
 }
 
-describe('ClassTypeParser', () => {
+describe('OntologyClassParser', () => {
     it('should parse atomic node.', () => {
         var parser = createTestParser();
         var testClassIri = iriBasePrefix + 'A';
@@ -87,5 +89,4 @@ describe('ClassTypeParser', () => {
             console.log(result);
         }, "Maximum call stack size exceeded");
     });
-
 });
