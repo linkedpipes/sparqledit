@@ -1,6 +1,6 @@
+import {RdfIri} from '../Utils/RdfIri';
 import {IOntologyClass, AtomicClass, UnknownClass, RestrictionClass, IntersectionClass, UnionClass} from './OntologyClass';
 import {IGraph, IRDFNode} from '../GraphTools/GraphInterfaces';
-import {RdfIri} from '../SchemaDefinition/RdfIri';
 var rdf = require('rdf');
 
 export class OntologyClassParser {

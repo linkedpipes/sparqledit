@@ -1,7 +1,7 @@
+import {RdfIri} from '../../src/Utils/RdfIri';
 import {TurtleGraphWrapper} from '../../src/GraphTools/TurtleGraphWrapper';
 import {OntologyClassParser} from '../../src/Ontology/OntologyClassParser';
 import {IRDFNode} from '../../src/GraphTools/GraphInterfaces';
-import {RdfIri} from '../../src/SchemaDefinition/RdfIri';
 import {UnionClass, AtomicClass, IntersectionClass, UnknownClass} from '../../src/Ontology/OntologyClass';
 
 import * as chai from 'chai';

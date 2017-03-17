@@ -1,8 +1,8 @@
-import { IGraph } from '../../GraphTools/GraphInterfaces';
+import {RdfIri} from '../../Utils/RdfIri';
+import {IGraph} from '../../GraphTools/GraphInterfaces';
 import { TurtleGraphWrapper } from '../../GraphTools/TurtleGraphWrapper';
-import { OntologyClassParser } from '../OntologyClassParser';
-import { OntologyAssertions } from '../OntologyAssertions';
-import { RdfIri } from '../../SchemaDefinition/RdfIri';
+import {OntologyClassParser} from '../OntologyClassParser';
+import {OntologyAssertions} from '../OntologyAssertions';
 
 export class OntologyAssertionsBuilder {
 
