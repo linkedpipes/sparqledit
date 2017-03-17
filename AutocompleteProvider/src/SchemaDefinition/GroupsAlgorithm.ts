@@ -1,7 +1,7 @@
+import {TurtleGraphWrapper} from '../GraphTools/TurtleGraphWrapper';
 import {VisGraph} from '../Visualisation/VisGraph';
 import {RdfIri} from './RdfIri';
-import { ISchemaClass, ClassTypeParser } from './ClassTypeParser';
-import { TurtleGraphWrapper } from "GraphTools/TurtleGraphWrapper";
+import {ISchemaClass, ClassTypeParser} from './ClassTypeParser';
 
 var scc = require("strongly-connected-components")
 
@@ -167,12 +167,12 @@ export class GroupsAlgorithm {
 
         var subclasstriples = schemaGraph.match(null, RdfIri.rdfsSubclassOf, null);
         for (var subClassEdge of subclasstriples.triples) {
-            result.addSubclass(classTypeParser.getIt(subClassEdge.subject), classTypeParser.getIt(subClassEdge.object));
+            result.addSubclass(classTypeParser.getClassType(subClassEdge.subject), classTypeParser.getClassType(subClassEdge.object));
         }
 
         var equalclasstriples = schemaGraph.match(null, RdfIri.owlEquivalentClass, null);
         for (var equalclasstriple of equalclasstriples.triples) {
-            result.addEquivalence(classTypeParser.getIt(equalclasstriple.subject), classTypeParser.getIt(equalclasstriple.object));
+            result.addEquivalence(classTypeParser.getClassType(equalclasstriple.subject), classTypeParser.getClassType(equalclasstriple.object));
         }
 
         return result;

@@ -1,6 +1,6 @@
-import {IGraph, IRDFNode} from '../GraphTools/GraphInterfaces';
-import {SimpleGraph} from '../GraphTools/SimpleGraph';
-import {RdfIri} from './RdfIri';
+import { IGraph, IRDFNode, RDFNodeType } from '../GraphTools/GraphInterfaces';
+import { SimpleGraph } from '../GraphTools/SimpleGraph';
+import { RdfIri } from './RdfIri';
 var rdf = require('rdf');
 
 export enum OwlComposedType {
@@ -15,8 +15,13 @@ export interface ISchemaClass {
 }
 
 export class UnknownClass implements ISchemaClass {
+
+    constructor(public nodeValue: string) {
+
+    }
+
     getText() {
-        return 'Unknown';
+        return 'Unknown(' + this.nodeValue + ')';
     }
 }
 
@@ -71,22 +76,27 @@ export class UnionClass implements ISchemaClass {
 }
 
 export class ClassTypeParser {
+    private _schemaGraph: IGraph
 
-    constructor(private schemaGraph: IGraph) {
-
+    constructor(schemaGraph: IGraph) {
+        this._schemaGraph = schemaGraph;
     }
 
-    public getIt(inferNode: IRDFNode) {
-        var nodeType = inferNode.nodeType();
-        if (nodeType == 'IRI') {
-            return new AtomicClass(inferNode.nominalValue)
+    public get schemaGraph(): IGraph {
+        return this._schemaGraph;
+    }
+
+    public getClassType(classNode: IRDFNode): ISchemaClass {
+        var nodeType = classNode.nodeType();
+        if (nodeType == "IRI") {
+            return new AtomicClass(classNode.nominalValue)
         }
 
-        if (nodeType != 'BlankNode') {
-            return new UnknownClass();
+        if (nodeType != "BlankNode") {
+            return new UnknownClass(classNode.nominalValue);
         }
 
-        var inferClass = inferNode.nominalValue;
+        var inferClass = classNode.nominalValue;
         var currentTriples = this.schemaGraph.match('_:' + inferClass, null, null);
         var triples = currentTriples.match(null, RdfIri.owlOnProperty, null);
         if (triples.containsAny()) {
@@ -103,15 +113,12 @@ export class ClassTypeParser {
             return this.parseIntersection(currentTriples, triples);
         }
 
-        return new UnknownClass();
+        return new UnknownClass(classNode.nominalValue);
     }
 
     private parseRestriction(currentTriples: IGraph, propertyTriples: IGraph) {
         var triple = propertyTriples.getFirst();
         return new RestrictionClass(triple.object.nominalValue);
-    }
-    private parseCollection() {
-
     }
 
     private parseIntersection(currentTriples: IGraph, propertyTriples: IGraph) {
@@ -122,7 +129,7 @@ export class ClassTypeParser {
         var result = new IntersectionClass();
 
         for (var node of nodeCollection) {
-            result.addClass(this.getIt(node));
+            result.addClass(this.getClassType(node));
         }
 
         return result;
@@ -136,7 +143,7 @@ export class ClassTypeParser {
         var result = new UnionClass();
 
         for (var node of nodeCollection) {
-            result.addClass(this.getIt(node));
+            result.addClass(this.getClassType(node));
         }
 
         return result;

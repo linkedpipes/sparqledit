@@ -1,6 +1,8 @@
+export type RDFNodeType = "IRI" | "BlankNode" | "PlainLiteral" | "TypedLiteral";
+
 export interface IRDFNode {
     nominalValue: string;
-    nodeType(): string;
+    nodeType(): RDFNodeType;
 }
 
 export interface ITriple {
@@ -11,6 +13,8 @@ export interface ITriple {
 
 export interface IGraph {
     match(subject: string, predicate: string, object: string): IGraph
+    anyObject(subject: string, predicate: string): IRDFNode
+    eachObject(subject: string, predicate: string): IRDFNode[]
     getCollection(subject: string): IRDFNode[]
     containsAny(): boolean
     getFirst(): ITriple

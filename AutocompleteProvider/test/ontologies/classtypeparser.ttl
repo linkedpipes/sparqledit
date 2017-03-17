@@ -1,0 +1,49 @@
+@prefix : <http://example.org/test#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:A a owl:Class;
+    owl:equivalentClass [
+        a owl:Class;
+        owl:unionOf (
+            :B 
+            :C
+            [ a owl:Class;
+                owl:intersectionOf (
+            :D 
+            :E ) ]
+        )
+    ].
+
+_:blank1 a owl:Class;
+    owl:unionOf ( :BlankTestClass2 :BlankTestClass3 ) .
+
+:BlankTestClass1 a owl:Class ;
+    owl:equivalentClass _:blank1 .
+
+_:blank2 a owl:Class;
+owl:unionOf ( 
+    :CycleBlankTestClass2 
+    :CycleBlankTestClass3 
+    [ a owl:Class;
+        owl:intersectionOf (
+    :CycleBlankTestClass4
+    _:blank2 ) ]
+) .
+
+:CycleBlankTestClass1 a owl:Class ;
+    owl:equivalentClass _:blank2 .
+
+:UnknownClassTest rdfs:subClassOf "literal" .
+:UnknownClassTest rdfs:subClassOf "5"^^xsd:integer .
+:UnknownClassTest rdfs:subClassOf [
+        a owl:Class;
+        owl:unionMismatchOf ( :Random1 :Random2 ) 
+].
+
+:RestrictionClass owl:equivalentClass
+    [ a owl:Restriction ;
+        owl:onProperty :RestrictionProperty ;
+        owl:someValuesFrom :RestrictedClass
+    ] .

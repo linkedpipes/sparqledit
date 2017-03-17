@@ -1,5 +1,5 @@
-import {IGraph, ITriple} from './GraphInterfaces';
-import {SimpleGraph} from './SimpleGraph';
+import { IRDFNode, IGraph, ITriple } from './GraphInterfaces';
+import { SimpleGraph } from './SimpleGraph';
 var rdf = require('rdf');
 
 export class TurtleGraphWrapper implements IGraph {
@@ -28,6 +28,17 @@ export class TurtleGraphWrapper implements IGraph {
     public match(subject: any, predicate: any, object: any) {
         return new SimpleGraph(this.graph.match(subject, predicate, object));
     }
+
+    anyObject(subject: string, predicate: string): IRDFNode {
+        return this.graph.match(subject, predicate, null)[0].object;
+    }
+
+    eachObject(subject: string, predicate: string): IRDFNode[] {
+        var result = this.graph.match(subject, predicate, null)
+            .map((x: any) => x.object);
+        return result;
+    }
+
 
     public getCollection(subject: string) {
         return this.graph.getCollection(subject);

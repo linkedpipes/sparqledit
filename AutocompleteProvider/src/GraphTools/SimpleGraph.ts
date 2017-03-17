@@ -1,7 +1,6 @@
-import {IGraph, ITriple, IRDFNode} from './GraphInterfaces';
+import { IGraph, ITriple, IRDFNode } from './GraphInterfaces';
 
 export class SimpleGraph implements IGraph {
-
 
     constructor(public triples: ITriple[]) {
 
@@ -17,6 +16,24 @@ export class SimpleGraph implements IGraph {
         return new SimpleGraph(resultTriples);
     }
 
+    anyObject(subject: string, predicate: string): IRDFNode {
+        for (var triple of this.triples) {
+            if ((subject == null || triple.subject.nominalValue == subject) &&
+                (predicate == null || triple.predicate.nominalValue == predicate)) {
+                return triple.object;
+            }
+        }
+        return null;
+    }
+
+    eachObject(subject: string, predicate: string): IRDFNode[] {
+        var resultObjects = this.triples.filter((x) =>
+            (subject == null || x.subject.nominalValue == subject) &&
+            (predicate == null || x.predicate.nominalValue == predicate)
+        ).map(x => x.object);
+        return resultObjects;
+    }
+    
     public concat(tripleArray: SimpleGraph) {
         return new SimpleGraph(this.triples.concat(tripleArray.triples));
     }
