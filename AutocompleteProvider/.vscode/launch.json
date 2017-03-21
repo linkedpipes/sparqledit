@@ -36,6 +36,7 @@
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "preLaunchTask": "build",
             "args": [
+                "--recursive",
                 "--timeout",
                 "999999",
                 "${workspaceRoot}/bin/test"
