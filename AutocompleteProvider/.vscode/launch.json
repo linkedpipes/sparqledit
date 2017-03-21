@@ -39,7 +39,9 @@
                 "--recursive",
                 "--timeout",
                 "999999",
-                "${workspaceRoot}/bin/test"
+                "${workspaceRoot}/bin/test",
+                "--grep",
+                "OntologyHiearchyBuilder"
             ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}/bin/test",

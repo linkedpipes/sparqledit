@@ -1,5 +1,5 @@
-import {IOntologyClass} from './OntologyClass';
-import {VisGraph} from '../Visualisation/VisGraph';
+import { IOntologyClass } from './OntologyClass';
+import { VisGraph } from '../Visualisation/VisGraph';
 
 export class OntologyConcept {
     constructor(public ontologyClasses: IOntologyClass[]) {
@@ -12,10 +12,17 @@ export class OntologyConcept {
     }
 }
 
+export class OntologyConceptSubclassOfEdge {
+    public superClassIndex: number;
+    public subsetClassIndex: number;
+    public superClassConcept: OntologyConcept;
+    public subsetClassConcept: OntologyConcept;
+}
+
 export class OntologyHiearchy {
     public concepts: OntologyConcept[] = [];
-    
-    public subClassEdges: { superClass: number, subsetClass: number }[] = [];
+
+    public subClassOfEdges: OntologyConceptSubclassOfEdge[] = [];
 
     public addConcept(concept: OntologyConcept) {
         this.concepts.push(concept);
@@ -39,21 +46,30 @@ export class OntologyHiearchy {
      * Retruns null when class is not found.
      * @param schemaClass 
      */
-    public getConceptContainsOntologyClass(ontologyClass: IOntologyClass) {
+    public getConceptContainsOntologyClass(ontologyClass: IOntologyClass): OntologyConcept {
         for (var i = 0; i < this.concepts.length; i++) {
             if (this.concepts[i].containsClass(ontologyClass)) {
-                return i;
+                return this.concepts[i];
             }
         }
-        return null
+        return null;
     }
 
-    public addSubclassEdge(superClass: number, subsetClass: number) {
-        this.subClassEdges.push({ superClass: superClass, subsetClass: subsetClass });
+    public addSubclassOfEdge(superClassIndex: number, subsetClassIndex: number) {
+        var newEdge = new OntologyConceptSubclassOfEdge();
+        newEdge.superClassIndex = superClassIndex;
+        newEdge.subsetClassIndex = subsetClassIndex;
+        newEdge.superClassConcept = this.concepts[superClassIndex];
+        newEdge.subsetClassConcept = this.concepts[subsetClassIndex];
+        this.subClassOfEdges.push(newEdge);
     }
 
-    public existSubclassEdge(superClass: number, subsetClass: number) {
-        return this.subClassEdges.some((x) => x.subsetClass == subsetClass && x.superClass == superClass);
+    public existSubclassOfEdge(superClassIndex: number, subsetClassIndex: number) {
+        return this.subClassOfEdges.some((x) => x.subsetClassIndex == subsetClassIndex && x.superClassIndex == superClassIndex);
+    }
+
+    public existsSubclassOfEdgeConcept(superClassConcept: OntologyConcept, subsetClassConcept: OntologyConcept) {
+        return this.subClassOfEdges.some(x => x.subsetClassConcept == subsetClassConcept && x.superClassConcept == superClassConcept);
     }
 
     public serializeGraph() {
@@ -64,7 +80,7 @@ export class OntologyHiearchy {
                 label: x.ontologyClasses.map(y => y.getText()).join('\n')
             }));
 
-        visGraph.edges = this.subClassEdges.map((x) => ({ from: x.subsetClass, to: x.superClass }));
+        visGraph.edges = this.subClassOfEdges.map((x) => ({ from: x.subsetClassIndex, to: x.superClassIndex }));
         return visGraph.serialize();
     }
 }

@@ -1,18 +1,18 @@
-import {OntologyAssertions} from '../OntologyAssertions';
-import {OntologyHiearchy, OntologyConcept} from '../OntologyHierchy';
+import { OntologyAssertions } from '../OntologyAssertions';
+import { OntologyHiearchy, OntologyConcept } from '../OntologyHierchy';
 
 var scc = require("strongly-connected-components")
 
-interface IStrongComponentAlgorithmResult {
+interface IStronglyConnectedComponentAlgorithmResult {
     adjacencyList: number[][];
     components: number[][];
 }
 
-interface IStrongComponentAlgorithm {
-    compute(subclassEdges: { superClass: number, subsetClass: number }[], nodeCount: number): IStrongComponentAlgorithm
+interface IStronglyConnectedComponentAlgorithm {
+    compute(subclassOfEdges: { superClass: number, subsetClass: number }[], nodeCount: number): IStronglyConnectedComponentAlgorithmResult
 }
 
-class SccLibAlgorithmWrapper implements IStrongComponentAlgorithm {
+class SccLibAlgorithmWrapper implements IStronglyConnectedComponentAlgorithm {
     private convertEdgesToAdjacentList(subclassEdges: { superClass: number, subsetClass: number }[], nodeCount: number) {
         var result: number[][] = new Array(nodeCount);
         for (var i = 0; i < nodeCount; i++) {
@@ -24,7 +24,7 @@ class SccLibAlgorithmWrapper implements IStrongComponentAlgorithm {
         return result;
     }
 
-    compute(subclassEdges: { superClass: number, subsetClass: number }[], nodeCount: number) {
+    compute(subclassEdges: { superClass: number, subsetClass: number }[], nodeCount: number): IStronglyConnectedComponentAlgorithmResult {
         var adjacencyList = this.convertEdgesToAdjacentList(subclassEdges, nodeCount);
         var res = scc(adjacencyList);
         return res;
@@ -32,17 +32,14 @@ class SccLibAlgorithmWrapper implements IStrongComponentAlgorithm {
 }
 
 export class OntologyHiearchyBuilder {
-    private strongComponentAlgorithm = new SccLibAlgorithmWrapper();
+    private stronglyConnectedComponentAlgorithm = new SccLibAlgorithmWrapper();
 
-    constructor(private graphAssertions: OntologyAssertions) {
+    public createOntologyHiearchy(graphAssertions: OntologyAssertions) {
+        var strongComponentGraph = this.stronglyConnectedComponentAlgorithm.compute(graphAssertions.subClassEdges, graphAssertions.classes.length);
+   
+        var components = strongComponentGraph.components;
+        var adjacencyList = strongComponentGraph.adjacencyList;
 
-    }
-
-    public createComponentGraph(graphAssertions: OntologyAssertions) {
-
-        var strongComponentGraph = this.strongComponentAlgorithm.compute(graphAssertions.subClassEdges, graphAssertions.classes.length);
-        var adjacencyList: number[][] = strongComponentGraph.adjacencyList;
-        var components: number[][] = strongComponentGraph.components;
         var result = new OntologyHiearchy();
 
         for (var component of components) {
@@ -51,14 +48,9 @@ export class OntologyHiearchyBuilder {
         }
 
         for (var i = 0; i < adjacencyList.length; i++) {
-            adjacencyList[i].forEach((x) => result.addSubclassEdge(i, x));
+            adjacencyList[i].forEach((x) => result.addSubclassOfEdge(i, x));
         }
 
         return result;
-    }
-
-    public compute() {
-        var componentGraph = this.createComponentGraph(this.graphAssertions);
-        return componentGraph;
     }
 }
