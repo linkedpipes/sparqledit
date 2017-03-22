@@ -1,3 +1,4 @@
+import { OntologyAssertions } from './OntologyAssertions';
 import { IOntologyClass } from './OntologyClass';
 import { VisGraph } from '../Visualisation/VisGraph';
 
@@ -20,6 +21,8 @@ export class OntologyConceptSubclassOfEdge {
 }
 
 export class OntologyHiearchy {
+    public ontologyAssertions: OntologyAssertions
+    
     public concepts: OntologyConcept[] = [];
 
     public subClassOfEdges: OntologyConceptSubclassOfEdge[] = [];
@@ -70,6 +73,10 @@ export class OntologyHiearchy {
 
     public existsSubclassOfEdgeConcept(superClassConcept: OntologyConcept, subsetClassConcept: OntologyConcept) {
         return this.subClassOfEdges.some(x => x.subsetClassConcept == subsetClassConcept && x.superClassConcept == superClassConcept);
+    }
+
+    public getAllSuperClasses(subsetClassConcept: OntologyConcept) {
+        return this.subClassOfEdges.filter(x => x.subsetClassConcept == subsetClassConcept).map(x => x.superClassConcept);
     }
 
     public serializeGraph() {

@@ -36,12 +36,12 @@ export class OntologyHiearchyBuilder {
 
     public createOntologyHiearchy(graphAssertions: OntologyAssertions) {
         var strongComponentGraph = this.stronglyConnectedComponentAlgorithm.compute(graphAssertions.subClassEdges, graphAssertions.classes.length);
-   
+
         var components = strongComponentGraph.components;
         var adjacencyList = strongComponentGraph.adjacencyList;
 
         var result = new OntologyHiearchy();
-
+        result.ontologyAssertions = graphAssertions;
         for (var component of components) {
             var classesInCurrentComponent = component.map((x) => graphAssertions.classes[x]);
             result.addConcept(new OntologyConcept(classesInCurrentComponent));
