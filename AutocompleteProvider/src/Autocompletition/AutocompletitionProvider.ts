@@ -1,238 +1,198 @@
-// import { RdfIri } from '../SchemaDefinition/RdfIri';
-// import { Schema } from '../SchemaDefinition/Schema';
-// import * as _ from 'lodash';
+import {AtomicClass, IOntologyClass} from '../Ontology/OntologyClass';
+import { OntologyHiearchy } from '../Ontology/OntologyHierchy';
+import { RdfIri } from '../Utils/RdfIri';
+import * as _ from 'lodash';
 
-// export class VariableTypeItem {
-//     public possibleClasses: string[] = [];
-//     public possibleAdvices: string[] = [];
+export class VariableTypeItem {
+    public possibleClasses: IOntologyClass[] = [];
+    public possibleAdvices: string[] = [];
 
-//     constructor(public name: string) {
+    constructor(public name: string) {
 
-//     }
-// }
+    }
+}
 
-// export class AutocompleteContext {
-//     public variables: VariableTypeItem[] = [];
-    
-//     getVariableContext(name: string) {
-//         var matchedVariables = this.variables.filter(x => x.name == name);
-//         var length = matchedVariables.length;
-//         if (length > 1) {
-//             throw new Error();
-//         }
-//         if (length == 0) {
-//             return null;
-//         }
-//         return matchedVariables[0];
-//     }
-// }
+export class AutocompleteContext {
+    public variables: VariableTypeItem[] = [];
 
-// export enum NodeType {
-//     Iri,
-//     Blank,
-//     Variable,
-//     Literal,
-// }
+    getVariableContext(name: string) {
+        var matchedVariables = this.variables.filter(x => x.name == name);
+        var length = matchedVariables.length;
+        if (length > 1) {
+            throw new Error();
+        }
+        if (length == 0) {
+            return null;
+        }
+        return matchedVariables[0];
+    }
+}
 
-// export class Node {
-//     private _originalValue: string;
-//     private _value: string;
-//     private _type: NodeType;
+export enum NodeType {
+    Iri,
+    Blank,
+    Variable,
+    Literal,
+}
 
-//     public get originalValue() {
-//         return this._originalValue;
-//     }
+export class Node {
+    private _originalValue: string;
+    private _value: string;
+    private _type: NodeType;
 
-//     public get value() {
-//         return this._value;
-//     }
+    public get originalValue() {
+        return this._originalValue;
+    }
 
-//     public get type() {
-//         return this._type;
-//     }
+    public get value() {
+        return this._value;
+    }
 
-//     constructor(nodeValue: string) {
-//         this._originalValue = nodeValue;
-//         // TODO test the method especially substring
-//         var startChar = nodeValue.substr(0, 1);
-//         if (startChar === "?" || startChar === "$") {
-//             //variable
-//             this._type = NodeType.Variable;
-//             this._value = nodeValue.substring(1, nodeValue.length);
-//         } else if (startChar === "\"") {
-//             //literal
-//             this._type = NodeType.Literal;
-//             this._value = nodeValue;
-//         } else if (nodeValue.substr(0, 2) === "_:") {
-//             // blank node
-//             this._type = NodeType.Blank;
-//             this._value = nodeValue.substring(2, nodeValue.length);
-//         } else {
-//             // iri 
-//             this._type = NodeType.Iri;
-//             this._value = nodeValue;
-//         }
-//     }
-// }
+    public get type() {
+        return this._type;
+    }
 
-// export class Triple {
-//     public subject: Node;
-//     public predicate: Node;
-//     public object: Node;
-//     constructor(subject: string,
-//         predicate: string,
-//         object: string) {
+    constructor(nodeValue: string) {
+        this._originalValue = nodeValue;
+        // TODO test the method especially substring
+        var startChar = nodeValue.substr(0, 1);
+        if (startChar === "?" || startChar === "$") {
+            //variable
+            this._type = NodeType.Variable;
+            this._value = nodeValue.substring(1, nodeValue.length);
+        } else if (startChar === "\"") {
+            //literal
+            this._type = NodeType.Literal;
+            this._value = nodeValue;
+        } else if (nodeValue.substr(0, 2) === "_:") {
+            // blank node
+            this._type = NodeType.Blank;
+            this._value = nodeValue.substring(2, nodeValue.length);
+        } else {
+            // iri 
+            this._type = NodeType.Iri;
+            this._value = nodeValue;
+        }
+    }
+}
 
-//         this.subject = new Node(subject);
-//         this.predicate = new Node(predicate);
-//         this.object = new Node(object);
-//     }
+export class Triple {
+    public subject: Node;
+    public predicate: Node;
+    public object: Node;
 
-//     getAllNodes() {
-//         return [this.subject, this.predicate, this.object];
-//     }
-// }
+    constructor(subject: string,
+        predicate: string,
+        object: string) {
 
-// export class Block {
-//     public triples: Triple[];
+        this.subject = new Node(subject);
+        this.predicate = new Node(predicate);
+        this.object = new Node(object);
+    }
 
-//     constructor(queryBlock: any) {
-//         this.triples = queryBlock.map((x: any) =>
-//             new Triple(x.subject,
-//                 x.predicate,
-//                 x.object)
-//         );
-//     }
+    getAllNodes() {
+        return [this.subject, this.predicate, this.object];
+    }
+}
 
-//     matchNode(node: Node, value: string) {
-//         if (value == null) {
-//             return true;
-//         }
+export class Block {
+    public triples: Triple[];
 
-//         return node.originalValue == value;
-//     }
+    constructor(queryBlock: any) {
+        this.triples = queryBlock.map((x: any) =>
+            new Triple(x.subject,
+                x.predicate,
+                x.object)
+        );
+    }
 
-//     match(subject: string, predicate: string, object: string) {
-//         var result = this.triples.filter(x => {
-//             return this.matchNode(x.subject, subject) &&
-//                 this.matchNode(x.predicate, predicate) &&
-//                 this.matchNode(x.object, object);
-//         });
-//         return result;
-//     }
-// }
+    matchNode(node: Node, value: string) {
+        if (value == null) {
+            return true;
+        }
 
-// export class AutocompleteProvider {
-//     constructor(private schema: Schema) {
-//     }
+        return node.originalValue == value;
+    }
 
-//     private extractAllVariablesNames(block: Block) {
-//         var result = _(block.triples).map(x => x.getAllNodes())
-//             .flatten()
-//             .filter((x: Node) => x.type == NodeType.Variable)
-//             .map((x: Node) => x.value)
-//             .uniq()
-//             .value();
-//         return result;
-//     }
+    match(subject: string, predicate: string, object: string) {
+        var result = this.triples.filter(x => {
+            return this.matchNode(x.subject, subject) &&
+                this.matchNode(x.predicate, predicate) &&
+                this.matchNode(x.object, object);
+        });
+        return result;
+    }
+}
 
-//     private createContext(block: Block) {
-//         var variableNames = this.extractAllVariablesNames(block);
-//         var context = new AutocompleteContext();
-//         for (var variableName of variableNames) {
-//             context.variables.push(new VariableTypeItem(variableName));
-//         }
-//         return context;
-//     }
+export class AutocompleteProvider {
 
-//     private findAllRdfType(block: Block) {
-//         var matchedTriples = block.match(null, RdfIri.rdfType, null);
-//         return matchedTriples
-//             .filter(x => x.subject.type == NodeType.Variable &&
-//                 x.object.type == NodeType.Iri)
-//             .map(x => ({
-//                 variableName: x.subject.value,
-//                 classIri: x.object.value
-//             }));
-//     }
+    constructor(private ontologyHiearchy: OntologyHiearchy) {
 
-//     private inferSomeThings(context: AutocompleteContext,
-//         block: Block,
-//         variableName: string,
-//         classIri: string) {
-//         this.setVariableType(context, variableName, classIri);
-//         this.setInferencedAdvices(context, block, variableName, classIri);
-//     }
+    }
 
-//     private setInferencedAdvices(context: AutocompleteContext,
-//         block: Block,
-//         variableName: string,
-//         classIri: string) {
-//         var classSchema = this.schema.getClass(classIri);
-//         if (classSchema == null) {
-//             return;
-//         }
+    private extractAllVariablesNames(block: Block) {
+        var result = _(block.triples).map(x => x.getAllNodes())
+            .flatten()
+            .filter((x: Node) => x.type == NodeType.Variable)
+            .map((x: Node) => x.value)
+            .uniq()
+            .value();
+        return result;
+    }
 
-//         var matchedTriples = block.match('?' + variableName, null, null);
-//         // začatek variable, druhy varible.
-//         for (var matchedTriple of matchedTriples) {
-//             if (matchedTriple.predicate.type == NodeType.Variable) {
-//                 var variableContext = context.getVariableContext(matchedTriple.predicate.value);
-//                 var currentAdvices = classSchema.getPropertyNames();
-//                 Array.prototype.push.apply(variableContext.possibleAdvices, currentAdvices);
-//             }
-//         }
-//     }
+    private createContext(block: Block) {
+        var variableNames = this.extractAllVariablesNames(block);
+        var context = new AutocompleteContext();
+        for (var variableName of variableNames) {
+            context.variables.push(new VariableTypeItem(variableName));
+        }
+        return context;
+    }
 
-//     private inferNextTypes(context: AutocompleteContext, block: Block, fromVariableName: string, variableSchema: ClassDefinition) {
-//         var matchedTriples = block.match('?' + fromVariableName, null, null);
-//         var newInferncedVariables = [];
+    private findAllRdfType(block: Block) {
+        var matchedTriples = block.match(null, RdfIri.rdfType, null);
+        return matchedTriples
+            .filter(x => x.subject.type == NodeType.Variable &&
+                x.object.type == NodeType.Iri)
+            .map(x => ({
+                variableName: x.subject.value,
+                classIri: x.object.value
+            }));
+    }
 
-//         var result = matchedTriples
-//             .filter(matchedTriple => {
-//                 var predicate = matchedTriple.predicate;
-//                 return predicate.type == NodeType.Iri &&
-//                     _.includes(variableSchema.getPropertyNames(), predicate.value) &&
-//                     matchedTriple.object.type == NodeType.Variable;
-//             })
-//             .map(matchedTriple => ({
-//                 variableName: matchedTriple.object.value,
-//                 classIri: variableSchema.getProperty(matchedTriple.predicate.value).range
-//             }));
 
-//         return result;
-//     }
+    private setVariableType(context: AutocompleteContext, variableName: string, ontologyClass: IOntologyClass) {
+        var variableContext = context.getVariableContext(variableName);
+        variableContext.possibleClasses.push(ontologyClass);
+    }
 
-//     private setVariableType(context: AutocompleteContext, variableName: string, classIri: string) {
-//         var variableContext = context.getVariableContext(variableName);
-//         variableContext.possibleClasses.push(classIri);
-//     }
+    private propertyNodeSetVariable(context: AutocompleteContext, subjectOrObject: Node, domainOrRange: IOntologyClass) {
+        if (subjectOrObject.type == NodeType.Variable && domainOrRange != null) {
+            this.setVariableType(context, subjectOrObject.value, domainOrRange)
+        }
+    }
 
-//     private inferenceStep(context: AutocompleteContext, block: Block) {
-//         //najdi všechny x a type.
-//         // 
-//     }
+    private doAllInference(context: AutocompleteContext, block: Block) {
+        //  rdfType inrerenece 
+        var rdfTypes = this.findAllRdfType(block);
+        rdfTypes.forEach(x => this.setVariableType(context, x.variableName, new AtomicClass(x.classIri)));
 
-//     private initStep(context: AutocompleteContext, block: Block) {
-//         var rdfTypes = this.findAllRdfType(block);
-//         rdfTypes.forEach(x => this.inferSomeThings(context, block, x.variableName, x.classIri));
-//         return rdfTypes;
-//     }
+        for (var triple of block.triples) {
+            if (triple.predicate.type == NodeType.Iri) {
+                var currentPropertyName = this.ontologyHiearchy.ontologyAssertions.findPropertyByName(triple.predicate.value);
+                if (currentPropertyName != null) {
+                    this.propertyNodeSetVariable(context, triple.subject, currentPropertyName.domain);
+                    this.propertyNodeSetVariable(context, triple.object, currentPropertyName.range);
+                }
+            }
+        }
+    }
 
-//     doAutocomplete(query: any) {
-//         var queryBlock = query.where[0].triples;
-//         var block = new Block(queryBlock);
-//         var context = this.createContext(block);
-//         var firstVariables = this.initStep(context, block)
-//         var ss = _(firstVariables).map(
-//             x => {
-//                 var variableSchema = this.schema.getClass(x.classIri);
-//                 if (variableSchema != null) {
-//                     return this.inferNextTypes(context, block, x.variableName, variableSchema);
-//                 }
-//             }
-//         ).flatten<{ variableName: string, classIri: string }>()
-//         .value();
-//         ss.forEach(x => this.inferSomeThings(context, block, x.variableName, x.classIri));
-//     }
-// }
+    doAutocomplete(query: any) {
+        var queryBlock = query.where[0].triples;
+        var block = new Block(queryBlock);
+        var context = this.createContext(block);
+        this.doAllInference(context, block);
+        return context;
+    }
+}

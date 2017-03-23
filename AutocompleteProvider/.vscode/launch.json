@@ -41,7 +41,7 @@
                 "999999",
                 "${workspaceRoot}/bin/test",
                 "--grep",
-                "OntologyHiearchyBuilder"
+                "AutocompleteProvider"
             ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}/bin/test",
