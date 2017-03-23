@@ -9,7 +9,6 @@ function getItemSetReferences(itemSets, id) {
     return result;
 }
 
-
 function createSymbolTable(parser) {
     var oldSymbols = parser.symbols_;
     var newSymbols = [];

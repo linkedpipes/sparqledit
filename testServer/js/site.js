@@ -148,6 +148,31 @@ function initMonacoEditor(text, $scope) {
             });
         });
 
+        monaco.languages.registerCompletionItemProvider('sparql', {
+            provideCompletionItems: provideSparqlCompletionItems
+        });
+
+        // monaco.languages.registerSignatureHelpProvider('sparql', {
+        //     signatureHelpTriggerCharacters: [' '],
+        //     provideSignatureHelp: function (model, position) {
+        //         return {
+        //             activeParameter: 0,
+        //             activeSignature: 0,
+        //             signatures: [{
+        //                 documentation: "doce",
+        //                 label: "label",
+        //                 parameters: [{
+        //                     documentation: "param1",
+        //                     label: "param"
+        //                 },
+        //                 {
+        //                     documentation: "parad2",
+        //                     label: "lssss"
+        //                 }]
+        //             }]
+        //         }
+        //     }
+        // });
     });
 }
 
