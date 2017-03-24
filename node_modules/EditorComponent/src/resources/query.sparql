@@ -1,0 +1,9 @@
+select * where {
+    ?a ?b ?c.
+    ?a $b ?d.
+
+    ?x a <http://www.example.com/MyNewPersonClass>.
+    ?x ?cursor ?z.
+    ?x <http://www.example.com/favouriteBook> ?y.
+    ?y ?cruso ?z.
+}
