@@ -3,10 +3,21 @@ var fs = require("fs");
 
 const defaultPort = 80;
 
-var httpHeaders = {
-    "Content-Type": "text/html; charset=utf-8",
-    "Access-Control-Allow-Origin": "*"
-};
+function createHttpHeaders(url) {
+    var isHtml = url.match(/\.html$/);
+    var isJson = url.match(/\.json$/);
+
+    var httpHeaders = {
+        "Access-Control-Allow-Origin": "*"
+    };
+    if (isHtml) {
+        httpHeaders["Content-Type"] = "text/html; charset=utf-8";
+    }
+    if (isJson) {
+        httpHeaders["Content-Type"] = "application/json; charset=utf-8";
+    }
+    return httpHeaders;
+}
 
 function getPort() {
     try {
@@ -39,7 +50,7 @@ function simpleController(url) {
 
 var server = http.createServer((req, res) => {
     var response = simpleController(req.url);
-    res.writeHead(response.code, httpHeaders);
+    res.writeHead(response.code, createHttpHeaders(req.url));
     res.end(response.content);
 })
 
