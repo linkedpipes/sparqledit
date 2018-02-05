@@ -23,7 +23,7 @@
             ontologySourceUrl: "./exampleOntology.json"
         };
 
-        require(['editor/sparqlEditor'], function (sparqlEditorBundle) {
+        require(['editor/release/sparqlEditor-release'], function (sparqlEditorBundle) {
             var container = document.getElementById('editorContainer');
             var editorComponent = new sparqlEditorBundle.SparqlEditor(container, settings);
             editorComponent.init();
