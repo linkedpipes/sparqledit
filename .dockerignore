@@ -1,3 +1,8 @@
+.git
 node_modules/**/node_modules
+node_modules/**/dist
 ontologies
 ontologies.zip
+node_modules/EditorTool/tmp
+bin
+TestProject
