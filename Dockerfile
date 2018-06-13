@@ -13,5 +13,6 @@ RUN npm install --prefix /home/app/node_modules/EditorComponent
 COPY ./node_modules /home/app/node_modules
 RUN gulp --cwd ../ERSParser build
 RUN npm run build --prefix /home/app/node_modules/SparqlAutocompletion
-RUN npm run buildDebug --prefix /home/app/node_modules/EditorComponent
+RUN npm run buildDebug --prefix /home/app/node_modules/EditorComponent && \
+    npm run buildRelease --prefix /home/app/node_modules/EditorComponent
 CMD ["http-server"]

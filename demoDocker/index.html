@@ -35,7 +35,7 @@
             <option value="precomputed">Precomputed</option>
         </select>
         Ontology source url:
-        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px" />
+        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px"/>
         <input type="button" id="changeOntologySourceButton" value="Change ontology" />
     </div>
     <div id="editorContainer"></div>
@@ -66,8 +66,7 @@
             '}'
         ].join('\n');
 
-        var debugMode = false;
-        require(["debug/sparqlEditor-" + (debugMode ? "debug" : "release")], function (bundle) {
+        require(["debug/sparqlEditor.js"], function (bundle) {
             var container = document.getElementById("editorContainer");
             var settings = {
                 monacoEditorUrl: "../monaco-editor/min/vs",
@@ -78,7 +77,7 @@
                 isLoggingEnabled: true,
                 logOntologyBuildError: true
             };
-            var editorComponent = debugMode ? new bundle.SparqlEditorDebug(container, settings) : new bundle.SparqlEditor(container, settings);
+            var editorComponent = new bundle.SparqlEditor(container, settings);
             editorComponent.init();
             initForm(editorComponent);
         });
