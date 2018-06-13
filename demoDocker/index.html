@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>EditorComponent</title>
+    <script type="text/javascript" src="requirejs/require.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <style>
+        #sourceUrlForm {
+            width: 90%;
+            height: 5vh;
+            margin-right: auto;
+            margin-left: auto;
+            font-family: sans-serif;
+        }
+
+        #editorContainer {
+            width: 90%;
+            height: 90vh;
+            margin-right: auto;
+            margin-left: auto;
+            border: 1px solid #000000;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div id="sourceUrlForm">
+        Source type:
+        <select id="ontologySourceTypeSelect">
+            <option value="custom" selected>Custom</option>
+            <option value="raw">Raw</option>
+            <option value="precomputed">Precomputed</option>
+        </select>
+        Ontology source url:
+        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px" />
+        <input type="button" id="changeOntologySourceButton" value="Change ontology" />
+    </div>
+    <div id="editorContainer"></div>
+    <script type="text/javascript">
+        function changeOntologyUrl(editorComponent) {
+            var ontologySourceType = document.getElementById("ontologySourceTypeSelect").selectedOptions[0].value;
+            var ontologySourceUrl = document.getElementById("ontologySourceUrlTextBox").value;
+            editorComponent.changeOntologySourceUrl(ontologySourceUrl, ontologySourceType);
+        }
+
+        function initForm(editorComponent) {
+            document.getElementById("changeOntologySourceButton").onclick = function () {
+                changeOntologyUrl(editorComponent);
+            }
+
+            document.getElementById("ontologySourceUrlTextBox")
+                .addEventListener("keyup", function (event) {
+                    event.preventDefault();
+                    if (event.keyCode === 13) {
+                        changeOntologyUrl(editorComponent);
+                    }
+                });
+        }
+
+        var defaultEditorValue = [
+            'SELECT * WHERE {',
+            '?a ?b ?c',
+            '}'
+        ].join('\n');
+
+        var debugMode = false;
+        require(["debug/sparqlEditor-" + (debugMode ? "debug" : "release")], function (bundle) {
+            var container = document.getElementById("editorContainer");
+            var settings = {
+                monacoEditorUrl: "../monaco-editor/min/vs",
+                ontologySourceUrl: "http://localhost:8080/exampleOntology.json",
+                defaultEditorValue: defaultEditorValue,
+                saveEditorValueInCookies: true,
+                propertySelectorType: "Full",
+                isLoggingEnabled: true,
+                logOntologyBuildError: true
+            };
+            var editorComponent = debugMode ? new bundle.SparqlEditorDebug(container, settings) : new bundle.SparqlEditor(container, settings);
+            editorComponent.init();
+            initForm(editorComponent);
+        });
+    </script>
+</body>
+
+</html>
