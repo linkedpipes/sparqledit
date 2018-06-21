@@ -35,7 +35,8 @@
             <option value="precomputed">Precomputed</option>
         </select>
         Ontology source url:
-        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px"/>
+        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px"
+        />
         <input type="button" id="changeOntologySourceButton" value="Change ontology" />
     </div>
     <div id="editorContainer"></div>
@@ -62,7 +63,7 @@
 
         var defaultEditorValue = [
             'SELECT * WHERE {',
-            '?a ?b ?c',
+            '?person a <http://dbpedia.org/ontology/Person>.',
             '}'
         ].join('\n');
 
@@ -70,7 +71,8 @@
             var container = document.getElementById("editorContainer");
             var settings = {
                 monacoEditorUrl: "../bin/monaco-editor/min/vs",
-                ontologySourceUrl: "http://localhost:8080/exampleOntology.json",
+                ontologySourceUrl: "http://localhost:8080/dbpediaOntology.ttl",
+                ontologySourceType: "raw",
                 defaultEditorValue: defaultEditorValue,
                 saveEditorValueInCookies: true,
                 propertySelectorType: "Full",
