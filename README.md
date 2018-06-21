@@ -17,10 +17,10 @@ docker build . -t sparqleditor
 docker run --rm -it -p -p 8080:8080 sparqleditor
 ```
 
-Alternativná variantou je spuštění přes online demo ze služby DockerHub:
+Dopručenou variantou je spuštění webu SPARQL editoru ze služby DockerHub:
 
 ```bash
 docker run --rm -it -p 8080:8080 roucekmar/sparqleditor
 ```
 
-Tento image je speciálně upravený pro demonstraci projektu a návodu na jeho instalaci, zdrojové kody image jsou ve složce `./demoDocker`.
+Tento image obsahuje web vytvořený pro demonstraci a dokumentaci projektu. Mimo jiné obsahuje popis API komponenty SPARQL editoru a návodu na jeho instalaci. Zdrojové kódy webu jsou ve složce `./demoDocker`.

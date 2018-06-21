@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.1/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" />
+    <link rel="stylesheet" href="css/github-markdown.css" />
+    <title>Document</title>
+    <style>
+        #homeLink {
+            min-width: 300px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 45px;
+            box-sizing: border-box;
+            font-size: 1.2em;
+            text-decoration: none;
+            color: #000000;
+        }
+
+        #homeLink:hover {
+            color: orange;
+        }
+
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 300px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+
+        @media (max-width: 300px) {
+            .markdown-body {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a href="./index.md" id="homeLink">Home</a>
+    <div id="markdown-container" class="markdown-body"></div>
+
+    <script>
+        var md = window.markdownit({
+            highlight: function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        var rs = hljs.highlight(lang, str).value;
+                        return rs;
+                    } catch (__) { }
+                }
+                return ''; // use external default escaping
+            }
+        });
+
+        function createRequest(url, requestCallback) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.responseType = "text";
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    requestCallback(xhttp.response);
+                }
+            };
+            xhttp.open("GET", url, true);
+            xhttp.send();
+        }
+
+        function renderMarkdownInContainer(mardownContent) {
+            var html = md.render(mardownContent);
+            document.getElementById('markdown-container').innerHTML = html;
+            window.scrollTo(0,0); 
+        }
+
+        function renderMarkdownFromUrl(url) {
+            document.getElementById('homeLink').style.display = url == './index.md' ? 'none' : 'block';
+            createRequest(url, function (response) {
+                renderMarkdownInContainer(response);
+            })
+        }
+
+        // override local href click
+        document.onclick = function (e) {
+            e = e || window.event;
+            var element = e.target || e.srcElement;
+
+            if (element.tagName == 'A') {
+                var hrefAttribute = element.getAttribute('href');
+                if (hrefAttribute.startsWith('./')) {
+                    renderMarkdownFromUrl(hrefAttribute);
+                    return false;
+                }
+            }
+        };
+
+        renderMarkdownFromUrl("./index.md");
+    </script>
+</body>
+
+</html>
