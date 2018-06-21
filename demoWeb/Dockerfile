@@ -1,5 +1,5 @@
 FROM node:8.4
 RUN npm install http-server -g
-COPY index.html  exampleOntology.json ./bin/ /var/sparqleditor/
+COPY web /var/sparqleditor/
 WORKDIR /var/sparqleditor
-CMD ["http-server","-p","80"]
+CMD ["http-server"]
