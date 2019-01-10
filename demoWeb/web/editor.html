@@ -30,14 +30,15 @@
     <div id="sourceUrlForm">
         Source type:
         <select id="ontologySourceTypeSelect">
-            <option value="custom" selected>Custom</option>
+            <option value="custom">Custom</option>
             <option value="raw">Raw</option>
-            <option value="precomputed">Precomputed</option>
+            <option value="precomputed" selected>Precomputed</option>
         </select>
         Ontology source url:
-        <input type="text" id="ontologySourceUrlTextBox" value="http://localhost:8080/exampleOntology.json" style="width: 350px"
-        />
+        <input type="text" id="ontologySourceUrlTextBox" value="./dbpedia.json" style="width: 350px" />
         <input type="button" id="changeOntologySourceButton" value="Change ontology" />
+        <input type="button" id="selectDBpediaButton" value="Select DBpedia" />
+        <input type="button" id="selectLOVButton" value="Select LOV" />
     </div>
     <div id="editorContainer"></div>
     <script type="text/javascript">
@@ -49,6 +50,18 @@
 
         function initForm(editorComponent) {
             document.getElementById("changeOntologySourceButton").onclick = function () {
+                changeOntologyUrl(editorComponent);
+            }
+            
+            document.getElementById("selectDBpediaButton").onclick = function () {
+                document.getElementById("ontologySourceTypeSelect").options.selectedIndex = 2;
+                var ontologySourceUrl = document.getElementById("ontologySourceUrlTextBox").value = "./dbpedia.json";
+                changeOntologyUrl(editorComponent);
+            }
+
+            document.getElementById("selectLOVButton").onclick = function () {
+                document.getElementById("ontologySourceTypeSelect").options.selectedIndex = 2;
+                var ontologySourceUrl = document.getElementById("ontologySourceUrlTextBox").value = "./lov.json";
                 changeOntologyUrl(editorComponent);
             }
 
@@ -71,8 +84,8 @@
             var container = document.getElementById("editorContainer");
             var settings = {
                 monacoEditorUrl: "../bin/monaco-editor/min/vs",
-                ontologySourceUrl: "http://localhost:8080/dbpediaOntology.ttl",
-                ontologySourceType: "raw",
+                ontologySourceUrl: "./dbpedia.json",
+                ontologySourceType: "precomputed",
                 defaultEditorValue: defaultEditorValue,
                 saveEditorValueInCookies: true,
                 parentOntologyClassTracking: "Full",
