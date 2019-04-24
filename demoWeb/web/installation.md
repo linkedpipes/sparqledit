@@ -1,5 +1,5 @@
 # Instalace SPARQL editoru
-SPARQL editor je distribuován formou javascriptové komponenty pro front-end prostředí, jejíž API je podrobně popsáno na [této stránce](./api.md). Pro instalaci SPARQL editoru na libovolný server je potřeba několika kroků:
+SPARQL editor je distribuován formou javascriptové komponenty pro front-end prostředí, jejíž API je podrobně popsáno na [této stránce](#api). Pro instalaci SPARQL editoru na libovolný server je potřeba několika kroků:
 * Zpřístupnění javascriptových zdrojových kódů editoru na serveru.
 * Zpřístupnění popisu ontologie pro napovídání.
 * Nahrání zdrojových kódů editoru do webového prohlížeče a inicializace komponenty SPARQL editoru s URL, na kterém leží popis ontologie pro napovídání.
@@ -21,7 +21,7 @@ SPARQL editor je distribouván z hlediska konfigurace ve dvou variantách:
 ## Stažení instalačního archivu
 Pro instalaci SPARQL editoru je nejdříve potřeba stáhnout jeho [instalační archiv](sparql-editor.zip) (dostupný i na úvodní obrazovce). Součástí archivu je:
 * `./sparqleditor` - debug a release verze SPARQL editoru. 
-* `./editortool.js` - back-endový nástroj s názvem [EditorTool](./editortool.md) pro předpočítávání a poskytování ontologii pro SPARQL editor.
+* `./editortool.js` - back-endový nástroj s názvem [EditorTool](#editortool) pro předpočítávání a poskytování ontologii pro SPARQL editor.
 * `./monaco-editor` - zdrojové kódy pro instalaci [Monaco editoru](https://microsoft.github.io/monaco-editor)
 * `./requirejs` - zdrojové kódy pro instalaci [RequireJS](http://requirejs.org/)
 
@@ -65,4 +65,4 @@ Pomocí funkce `require` z knihovny RequireJS se nahraje modul SPARQL editoru do
 * `monacoEditorUrl` - musí obsahovat URL ke komponentě Monaco editoru, který je také součástí instalačního archivu.
 * `ontologySourceUrl` - musí obsahovat URL k popisu ontologie, kterou má SPARQL editor napovídat. Silně doporučeným nastavením je `ontologySourceType`, které specifikuje typ ontologie na dříve popsaném URL.
 
-Popis všech nastavení a jejich hodnot lze zobrazit [v popisu API](./api.md).
+Popis všech nastavení a jejich hodnot lze zobrazit [v popisu API](#api).
