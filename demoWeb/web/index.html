@@ -43,7 +43,7 @@
 </head>
 
 <body>
-    <a href="./index.md" id="homeLink">Home</a>
+    <a href="#index" id="homeLink">Home</a>
     <div id="markdown-container" class="markdown-body"></div>
 
     <script>
@@ -74,7 +74,7 @@
         function renderMarkdownInContainer(mardownContent) {
             var html = md.render(mardownContent);
             document.getElementById('markdown-container').innerHTML = html;
-            window.scrollTo(0,0); 
+            window.scrollTo(0, 0);
         }
 
         function renderMarkdownFromUrl(url) {
@@ -84,21 +84,20 @@
             })
         }
 
-        // override local href click
-        document.onclick = function (e) {
-            e = e || window.event;
-            var element = e.target || e.srcElement;
-
-            if (element.tagName == 'A') {
-                var hrefAttribute = element.getAttribute('href');
-                if (hrefAttribute.startsWith('./')) {
-                    renderMarkdownFromUrl(hrefAttribute);
-                    return false;
-                }
+        function render() {
+            var pageHash = window.location.hash;
+            if (pageHash == undefined || pageHash == "") {
+                pageHash = "#index";
             }
-        };
+            var pageName = pageHash.substr(1);
+            renderMarkdownFromUrl("./" + pageName + ".md");
+        }
 
-        renderMarkdownFromUrl("./index.md");
+        window.addEventListener("hashchange", function () {
+            render();
+        }, false);
+
+        render();
     </script>
 </body>
 

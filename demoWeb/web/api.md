@@ -25,5 +25,5 @@ SPARQL editor je distribuován formou javascriptové komponenty pro front-end pr
 ## Typy popisu ontologii
 SPARQL editor skrze vlastnosti `ontologySourceType` podporuje následující typy popisu ontologii:
 * `raw` - ontologie popsaná ve formátu turtle
-* `precomputed` - předpočítaná ontologie pomocí nástroje [EditorTool](./editortool.md)
-* `custom` - formát, který je poskytován příkazem `serve` v nástroji [EditorTool](./editortool.md)
+* `precomputed` - předpočítaná ontologie pomocí nástroje [EditorTool](#editortool)
+* `custom` - formát, který je poskytován příkazem `serve` v nástroji [EditorTool](#editortool)
